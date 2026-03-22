@@ -1,0 +1,25 @@
+# Xcode
+build/
+DerivedData/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+xcuserdata/
+
+# SPM
+.swiftpm/
+.build/
+Packages/
+
+# macOS
+.DS_Store
+*.dSYM.zip
+*.dSYM
+
+# Build artifacts
+default.profraw
+*.dmg
+
+# Secrets
+*.p12
+*.pem

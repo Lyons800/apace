@@ -10,6 +10,7 @@
 		BC91B45F2F6ADE780024EFF8 /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC91B3912F6AE0000024EFF8 /* WhisperKit */; };
 		BC91B4A32F6B00000024EFF8 /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = BC91B4A12F6B00000024EFF8 /* MLXLLM */; };
 		BC91B4A42F6B00000024EFF8 /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = BC91B4A22F6B00000024EFF8 /* MLXLMCommon */; };
+		BCMU000012F70000A0000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = BCMU000012F70000A0000002 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -18,37 +19,37 @@
 			containerPortal = BC91B3522F6ADC080024EFF8 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = BC91B3592F6ADC080024EFF8;
-			remoteInfo = WhisprMacOS;
+			remoteInfo = Murmur;
 		};
 		BC91B3742F6ADC0A0024EFF8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BC91B3522F6ADC080024EFF8 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = BC91B3592F6ADC080024EFF8;
-			remoteInfo = WhisprMacOS;
+			remoteInfo = Murmur;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		BC91B35A2F6ADC080024EFF8 /* WhisprMacOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhisprMacOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC91B3692F6ADC0A0024EFF8 /* WhisprMacOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhisprMacOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC91B3732F6ADC0A0024EFF8 /* WhisprMacOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WhisprMacOSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC91B35A2F6ADC080024EFF8 /* Murmur.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Murmur.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC91B3692F6ADC0A0024EFF8 /* MurmurTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MurmurTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC91B3732F6ADC0A0024EFF8 /* MurmurUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MurmurUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		BC91B35C2F6ADC080024EFF8 /* WhisprMacOS */ = {
+		BC91B35C2F6ADC080024EFF8 /* Murmur */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WhisprMacOS;
+			path = Murmur;
 			sourceTree = "<group>";
 		};
-		BC91B36C2F6ADC0A0024EFF8 /* WhisprMacOSTests */ = {
+		BC91B36C2F6ADC0A0024EFF8 /* MurmurTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WhisprMacOSTests;
+			path = MurmurTests;
 			sourceTree = "<group>";
 		};
-		BC91B3762F6ADC0A0024EFF8 /* WhisprMacOSUITests */ = {
+		BC91B3762F6ADC0A0024EFF8 /* MurmurUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = WhisprMacOSUITests;
+			path = MurmurUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -61,6 +62,7 @@
 				BC91B45F2F6ADE780024EFF8 /* WhisperKit in Frameworks */,
 				BC91B4A32F6B00000024EFF8 /* MLXLLM in Frameworks */,
 				BC91B4A42F6B00000024EFF8 /* MLXLMCommon in Frameworks */,
+				BCMU000012F70000A0000001 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,9 +86,9 @@
 		BC91B3512F6ADC080024EFF8 = {
 			isa = PBXGroup;
 			children = (
-				BC91B35C2F6ADC080024EFF8 /* WhisprMacOS */,
-				BC91B36C2F6ADC0A0024EFF8 /* WhisprMacOSTests */,
-				BC91B3762F6ADC0A0024EFF8 /* WhisprMacOSUITests */,
+				BC91B35C2F6ADC080024EFF8 /* Murmur */,
+				BC91B36C2F6ADC0A0024EFF8 /* MurmurTests */,
+				BC91B3762F6ADC0A0024EFF8 /* MurmurUITests */,
 				BC91B35B2F6ADC080024EFF8 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -94,9 +96,9 @@
 		BC91B35B2F6ADC080024EFF8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				BC91B35A2F6ADC080024EFF8 /* WhisprMacOS.app */,
-				BC91B3692F6ADC0A0024EFF8 /* WhisprMacOSTests.xctest */,
-				BC91B3732F6ADC0A0024EFF8 /* WhisprMacOSUITests.xctest */,
+				BC91B35A2F6ADC080024EFF8 /* Murmur.app */,
+				BC91B3692F6ADC0A0024EFF8 /* MurmurTests.xctest */,
+				BC91B3732F6ADC0A0024EFF8 /* MurmurUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -104,9 +106,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		BC91B3592F6ADC080024EFF8 /* WhisprMacOS */ = {
+		BC91B3592F6ADC080024EFF8 /* Murmur */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BC91B37D2F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "WhisprMacOS" */;
+			buildConfigurationList = BC91B37D2F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "Murmur" */;
 			buildPhases = (
 				BC91B3562F6ADC080024EFF8 /* Sources */,
 				BC91B3572F6ADC080024EFF8 /* Frameworks */,
@@ -117,21 +119,22 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				BC91B35C2F6ADC080024EFF8 /* WhisprMacOS */,
+				BC91B35C2F6ADC080024EFF8 /* Murmur */,
 			);
-			name = WhisprMacOS;
+			name = Murmur;
 			packageProductDependencies = (
 				BC91B3912F6AE0000024EFF8 /* WhisperKit */,
 				BC91B4A12F6B00000024EFF8 /* MLXLLM */,
 				BC91B4A22F6B00000024EFF8 /* MLXLMCommon */,
+				BCMU000012F70000A0000002 /* Sparkle */,
 			);
-			productName = WhisprMacOS;
-			productReference = BC91B35A2F6ADC080024EFF8 /* WhisprMacOS.app */;
+			productName = Murmur;
+			productReference = BC91B35A2F6ADC080024EFF8 /* Murmur.app */;
 			productType = "com.apple.product-type.application";
 		};
-		BC91B3682F6ADC0A0024EFF8 /* WhisprMacOSTests */ = {
+		BC91B3682F6ADC0A0024EFF8 /* MurmurTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BC91B3802F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "WhisprMacOSTests" */;
+			buildConfigurationList = BC91B3802F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "MurmurTests" */;
 			buildPhases = (
 				BC91B3652F6ADC0A0024EFF8 /* Sources */,
 				BC91B3662F6ADC0A0024EFF8 /* Frameworks */,
@@ -143,18 +146,18 @@
 				BC91B36B2F6ADC0A0024EFF8 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				BC91B36C2F6ADC0A0024EFF8 /* WhisprMacOSTests */,
+				BC91B36C2F6ADC0A0024EFF8 /* MurmurTests */,
 			);
-			name = WhisprMacOSTests;
+			name = MurmurTests;
 			packageProductDependencies = (
 			);
-			productName = WhisprMacOSTests;
-			productReference = BC91B3692F6ADC0A0024EFF8 /* WhisprMacOSTests.xctest */;
+			productName = MurmurTests;
+			productReference = BC91B3692F6ADC0A0024EFF8 /* MurmurTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		BC91B3722F6ADC0A0024EFF8 /* WhisprMacOSUITests */ = {
+		BC91B3722F6ADC0A0024EFF8 /* MurmurUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BC91B3832F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "WhisprMacOSUITests" */;
+			buildConfigurationList = BC91B3832F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "MurmurUITests" */;
 			buildPhases = (
 				BC91B36F2F6ADC0A0024EFF8 /* Sources */,
 				BC91B3702F6ADC0A0024EFF8 /* Frameworks */,
@@ -166,13 +169,13 @@
 				BC91B3752F6ADC0A0024EFF8 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				BC91B3762F6ADC0A0024EFF8 /* WhisprMacOSUITests */,
+				BC91B3762F6ADC0A0024EFF8 /* MurmurUITests */,
 			);
-			name = WhisprMacOSUITests;
+			name = MurmurUITests;
 			packageProductDependencies = (
 			);
-			productName = WhisprMacOSUITests;
-			productReference = BC91B3732F6ADC0A0024EFF8 /* WhisprMacOSUITests.xctest */;
+			productName = MurmurUITests;
+			productReference = BC91B3732F6ADC0A0024EFF8 /* MurmurUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -210,15 +213,16 @@
 			packageReferences = (
 				BC91B3902F6AE0000024EFF8 /* XCRemoteSwiftPackageReference "WhisperKit" */,
 				BC91B4A02F6B00000024EFF8 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */,
+				BCMU000012F70000A0000003 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BC91B35B2F6ADC080024EFF8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				BC91B3592F6ADC080024EFF8 /* WhisprMacOS */,
-				BC91B3682F6ADC0A0024EFF8 /* WhisprMacOSTests */,
-				BC91B3722F6ADC0A0024EFF8 /* WhisprMacOSUITests */,
+				BC91B3592F6ADC080024EFF8 /* Murmur */,
+				BC91B3682F6ADC0A0024EFF8 /* MurmurTests */,
+				BC91B3722F6ADC0A0024EFF8 /* MurmurUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -274,12 +278,12 @@
 /* Begin PBXTargetDependency section */
 		BC91B36B2F6ADC0A0024EFF8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BC91B3592F6ADC080024EFF8 /* WhisprMacOS */;
+			target = BC91B3592F6ADC080024EFF8 /* Murmur */;
 			targetProxy = BC91B36A2F6ADC0A0024EFF8 /* PBXContainerItemProxy */;
 		};
 		BC91B3752F6ADC0A0024EFF8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BC91B3592F6ADC080024EFF8 /* WhisprMacOS */;
+			target = BC91B3592F6ADC080024EFF8 /* Murmur */;
 			targetProxy = BC91B3742F6ADC0A0024EFF8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -410,7 +414,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = WhisprMacOS/WhisprMacOS.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Murmur/Murmur.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -422,13 +426,15 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Whispr needs microphone access to transcribe your speech";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Murmur needs microphone access to transcribe your speech";
+				INFOPLIST_KEY_SUFeedURL = "https://github.com/oisinlyons/murmur/releases/latest/download/appcast.xml";
+				INFOPLIST_KEY_SUPublicEDKey = "zOO/VOlBiXDHXRsNb9W3LcMRFq3ZO8UCcZEoWbGLzFg=";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = m.WhisprMacOS;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -445,7 +451,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = WhisprMacOS/WhisprMacOS.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Murmur/Murmur.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -457,13 +463,15 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Whispr needs microphone access to transcribe your speech";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Murmur needs microphone access to transcribe your speech";
+				INFOPLIST_KEY_SUFeedURL = "https://github.com/oisinlyons/murmur/releases/latest/download/appcast.xml";
+				INFOPLIST_KEY_SUPublicEDKey = "zOO/VOlBiXDHXRsNb9W3LcMRFq3ZO8UCcZEoWbGLzFg=";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = m.WhisprMacOS;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -485,14 +493,14 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = m.WhisprMacOSTests;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WhisprMacOS.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WhisprMacOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Murmur.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Murmur";
 			};
 			name = Debug;
 		};
@@ -506,14 +514,14 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.2;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = m.WhisprMacOSTests;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WhisprMacOS.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WhisprMacOS";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Murmur.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Murmur";
 			};
 			name = Release;
 		};
@@ -525,14 +533,14 @@
 				DEVELOPMENT_TEAM = BWD692VD35;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = m.WhisprMacOSUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = WhisprMacOS;
+				TEST_TARGET_NAME = Murmur;
 			};
 			name = Debug;
 		};
@@ -544,14 +552,14 @@
 				DEVELOPMENT_TEAM = BWD692VD35;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = m.WhisprMacOSUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TEST_TARGET_NAME = WhisprMacOS;
+				TEST_TARGET_NAME = Murmur;
 			};
 			name = Release;
 		};
@@ -567,7 +575,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BC91B37D2F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "WhisprMacOS" */ = {
+		BC91B37D2F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "Murmur" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BC91B37E2F6ADC0A0024EFF8 /* Debug */,
@@ -576,7 +584,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BC91B3802F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "WhisprMacOSTests" */ = {
+		BC91B3802F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "MurmurTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BC91B3812F6ADC0A0024EFF8 /* Debug */,
@@ -585,7 +593,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BC91B3832F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "WhisprMacOSUITests" */ = {
+		BC91B3832F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "MurmurUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BC91B3842F6ADC0A0024EFF8 /* Debug */,
@@ -613,6 +621,14 @@
 				minimumVersion = 2.30.0;
 			};
 		};
+		BCMU000012F70000A0000003 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -630,6 +646,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BC91B4A02F6B00000024EFF8 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */;
 			productName = MLXLMCommon;
+		};
+		BCMU000012F70000A0000002 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BCMU000012F70000A0000003 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

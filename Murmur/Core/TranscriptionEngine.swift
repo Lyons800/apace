@@ -30,9 +30,9 @@ final class TranscriptionEngine {
     /// Dedicated, writable directory for WhisperKit models
     private static var modelCacheDirectory: URL {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let whisprDir = appSupport.appendingPathComponent("Whispr/Models", isDirectory: true)
-        try? FileManager.default.createDirectory(at: whisprDir, withIntermediateDirectories: true)
-        return whisprDir
+        let modelsDir = appSupport.appendingPathComponent("Murmur/Models", isDirectory: true)
+        try? FileManager.default.createDirectory(at: modelsDir, withIntermediateDirectories: true)
+        return modelsDir
     }
 
     func loadModel(progressCallback: ((Double) -> Void)? = nil) async throws {
@@ -49,7 +49,7 @@ final class TranscriptionEngine {
             download: true
         )
 
-        NSLog("[Whispr] WhisperKit init with model: \(resolvedModelName), downloadBase: \(Self.modelCacheDirectory.path)")
+        NSLog("[Murmur] WhisperKit init with model: \(resolvedModelName), downloadBase: \(Self.modelCacheDirectory.path)")
 
         let kit = try await WhisperKit(config)
         whisperKit = kit
@@ -134,7 +134,7 @@ final class TranscriptionEngine {
         while let url = enumerator.nextObject() as? URL {
             if url.pathExtension == "metadata" {
                 try? fm.removeItem(at: url)
-                NSLog("[Whispr] Removed metadata file: \(url.lastPathComponent)")
+                NSLog("[Murmur] Removed metadata file: \(url.lastPathComponent)")
             }
         }
 
@@ -145,7 +145,7 @@ final class TranscriptionEngine {
             while let url = hfEnum.nextObject() as? URL {
                 if url.pathExtension == "metadata" {
                     try? fm.removeItem(at: url)
-                    NSLog("[Whispr] Removed HF metadata file: \(url.lastPathComponent)")
+                    NSLog("[Murmur] Removed HF metadata file: \(url.lastPathComponent)")
                 }
             }
         }

@@ -3,7 +3,7 @@ import ServiceManagement
 import Carbon.HIToolbox
 
 struct SettingsView: View {
-    @State private var config = WhisprConfig.load()
+    @State private var config = MurmurConfig.load()
     @State private var showingHotkeyCapture = false
     @Environment(\.dismiss) private var dismiss
 
@@ -30,6 +30,7 @@ struct SettingsView: View {
         .onChange(of: config.useStreaming) { _, _ in config.save() }
         .onChange(of: config.llmEnabled) { _, _ in config.save() }
         .onChange(of: config.historyEnabled) { _, _ in config.save() }
+        .onChange(of: config.muteMediaDuringRecording) { _, _ in config.save() }
         .onChange(of: config.launchAtLogin) { _, newValue in
             config.save()
             setLaunchAtLogin(newValue)
@@ -44,6 +45,7 @@ struct SettingsView: View {
                 Toggle("Play sounds", isOn: $config.playSounds)
                 Toggle("Launch at login", isOn: $config.launchAtLogin)
                 Toggle("Save transcription history", isOn: $config.historyEnabled)
+                Toggle("Mute media during recording", isOn: $config.muteMediaDuringRecording)
             }
 
             Section("Hotkey") {
@@ -65,23 +67,60 @@ struct SettingsView: View {
             }
 
             Section("Model") {
+                Picker("Language", selection: $config.language) {
+                    Text("English").tag("en")
+                    Divider()
+                    Text("Spanish").tag("es")
+                    Text("French").tag("fr")
+                    Text("German").tag("de")
+                    Text("Italian").tag("it")
+                    Text("Portuguese").tag("pt")
+                    Text("Dutch").tag("nl")
+                    Text("Russian").tag("ru")
+                    Text("Japanese").tag("ja")
+                    Text("Chinese").tag("zh")
+                    Text("Korean").tag("ko")
+                    Text("Arabic").tag("ar")
+                    Text("Hindi").tag("hi")
+                    Text("Turkish").tag("tr")
+                    Text("Polish").tag("pl")
+                    Text("Swedish").tag("sv")
+                    Divider()
+                    Text("Auto-detect").tag("auto")
+                }
+                .onChange(of: config.language) { _, newLang in
+                    // Auto-switch to multilingual model when non-English selected
+                    if newLang != "en" && newLang != "auto" && config.modelName.hasSuffix(".en") {
+                        config.modelName = String(config.modelName.dropLast(3)) // base.en → base
+                    }
+                    config.save()
+                }
+
                 Picker("Model", selection: $config.modelName) {
-                    Text("tiny.en (75 MB, fastest)").tag("tiny.en")
-                    Text("base.en (142 MB, recommended)").tag("base.en")
-                    Text("small.en (466 MB, accurate)").tag("small.en")
-                    Text("medium.en (1.5 GB, very accurate)").tag("medium.en")
+                    if config.language == "en" {
+                        Text("tiny.en (75 MB, fastest)").tag("tiny.en")
+                        Text("base.en (142 MB, recommended)").tag("base.en")
+                        Text("small.en (466 MB, accurate)").tag("small.en")
+                        Text("medium.en (1.5 GB, very accurate)").tag("medium.en")
+                    } else {
+                        Text("tiny (75 MB, fastest)").tag("tiny")
+                        Text("base (142 MB, recommended)").tag("base")
+                        Text("small (466 MB, accurate)").tag("small")
+                        Text("medium (1.5 GB, very accurate)").tag("medium")
+                        Text("large-v3 (3 GB, best multilingual)").tag("large-v3")
+                    }
                 }
                 .onChange(of: config.modelName) { _, _ in config.save() }
 
-                Picker("Language", selection: $config.language) {
-                    Text("English").tag("en")
-                    Text("Auto-detect").tag("auto")
+                if config.language == "en" {
+                    Text("Use .en models for English. base.en is recommended for real-time use.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Multilingual models support all languages. large-v3 is most accurate but requires 3GB.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-                .onChange(of: config.language) { _, _ in config.save() }
-
-                Text("Use .en models for English. base.en is recommended for real-time use.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
 
             Section("Permissions") {
@@ -135,7 +174,7 @@ struct SettingsView: View {
             }
 
             Section("Context Detection") {
-                Text("Whispr detects the active app and adjusts formatting — code editors preserve casing, chat apps remove trailing periods, emails add them.")
+                Text("Murmur detects the active app and adjusts formatting — code editors preserve casing, chat apps remove trailing periods, emails add them.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -148,7 +187,7 @@ struct SettingsView: View {
     private var dictionaryTab: some View {
         Form {
             Section {
-                Text("Add words and their correct spellings. Whispr will replace spoken forms with the correct version after transcription and hint the speech model for better recognition.")
+                Text("Add words and their correct spellings. Murmur will replace spoken forms with the correct version after transcription and hint the speech model for better recognition.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -219,16 +258,58 @@ struct SettingsView: View {
             }
 
             if config.llmEnabled {
-                Section("Voice Commands") {
-                    Text("Start your dictation with a command:")
+                Section("Smart Modes") {
+                    Text("Start your dictation with a trigger phrase to apply a Smart Mode to selected text.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    ForEach($config.smartModes) { $mode in
+                        HStack(spacing: 8) {
+                            Toggle("", isOn: $mode.isEnabled)
+                                .labelsHidden()
+                                .toggleStyle(.checkbox)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(mode.name)
+                                    .fontWeight(.medium)
+                                Text("\"\(mode.triggerPhrase)\"")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Button {
+                                config.smartModes.removeAll { $0.id == mode.id }
+                                config.save()
+                            } label: {
+                                Image(systemName: "minus.circle.fill")
+                                    .foregroundStyle(.red.opacity(0.7))
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+
+                    Button {
+                        config.smartModes.append(SmartMode(
+                            name: "New Mode",
+                            triggerPhrase: "",
+                            systemPrompt: "Output ONLY the modified text, nothing else."
+                        ))
+                        config.save()
+                    } label: {
+                        Label("Add Smart Mode", systemImage: "plus")
+                    }
+
+                    if !config.smartModes.isEmpty {
+                        Button("Save Changes") { config.save() }
+                            .font(.caption)
+                    }
+                }
+
+                Section("Built-in Commands") {
+                    Text("These always work in addition to Smart Modes:")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("\"Fix grammar\" — corrects selected text")
-                        Text("\"Make professional\" — formal rewrite")
-                        Text("\"Make casual\" — informal rewrite")
-                        Text("\"Summarize\" — condenses selected text")
-                        Text("\"Translate to [language]\" — translates")
+                        Text("\"Translate to [language]\" — translates selected text")
                     }
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -247,9 +328,9 @@ struct SettingsView: View {
             } else {
                 try SMAppService.mainApp.unregister()
             }
-            NSLog("[Whispr] Launch at login: \(enabled)")
+            NSLog("[Murmur] Launch at login: \(enabled)")
         } catch {
-            NSLog("[Whispr] Failed to set launch at login: \(error.localizedDescription)")
+            NSLog("[Murmur] Failed to set launch at login: \(error.localizedDescription)")
         }
     }
 }

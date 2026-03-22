@@ -115,16 +115,35 @@ final class HotkeyManager {
         }
     }
 
+    // Device-specific modifier bit masks (from IOKit NX_* constants)
+    private static let rightOptionMask:  UInt = 0x40
+    private static let leftOptionMask:   UInt = 0x20
+    private static let rightCommandMask: UInt = 0x10
+    private static let leftCommandMask:  UInt = 0x08
+    private static let rightShiftMask:   UInt = 0x04
+    private static let leftShiftMask:    UInt = 0x02
+    private static let rightControlMask: UInt = 0x2000
+    private static let leftControlMask:  UInt = 0x01
+
     private func isTargetModifierPressed(_ event: NSEvent) -> Bool {
+        let raw = event.modifierFlags.rawValue
         switch targetKeyCode {
-        case UInt16(kVK_RightOption), UInt16(kVK_Option):
-            return event.modifierFlags.contains(.option)
-        case UInt16(kVK_RightCommand), UInt16(kVK_Command):
-            return event.modifierFlags.contains(.command)
-        case UInt16(kVK_RightShift), UInt16(kVK_Shift):
-            return event.modifierFlags.contains(.shift)
-        case UInt16(kVK_RightControl), UInt16(kVK_Control):
-            return event.modifierFlags.contains(.control)
+        case UInt16(kVK_RightOption):
+            return raw & Self.rightOptionMask != 0
+        case UInt16(kVK_Option):
+            return raw & Self.leftOptionMask != 0
+        case UInt16(kVK_RightCommand):
+            return raw & Self.rightCommandMask != 0
+        case UInt16(kVK_Command):
+            return raw & Self.leftCommandMask != 0
+        case UInt16(kVK_RightShift):
+            return raw & Self.rightShiftMask != 0
+        case UInt16(kVK_Shift):
+            return raw & Self.leftShiftMask != 0
+        case UInt16(kVK_RightControl):
+            return raw & Self.rightControlMask != 0
+        case UInt16(kVK_Control):
+            return raw & Self.leftControlMask != 0
         default:
             return false
         }

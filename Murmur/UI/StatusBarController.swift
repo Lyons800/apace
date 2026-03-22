@@ -17,7 +17,7 @@ final class StatusBarController {
         self.onQuitClicked = onQuit
 
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        item.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Whispr")
+        item.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Murmur")
         item.button?.image?.size = NSSize(width: 18, height: 18)
         item.menu = buildMenu()
         statusItem = item
@@ -66,7 +66,7 @@ final class StatusBarController {
 
         // Hotkey info
         menu.addItem(NSMenuItem.separator())
-        let config = WhisprConfig.load()
+        let config = MurmurConfig.load()
         let hotkeyName = KeyCodes.displayName(keyCode: config.hotkeyKeyCode, modifiers: config.hotkeyModifiers)
         let hotkeyItem = NSMenuItem(title: "Hotkey: \(hotkeyName) (\(config.recordingMode.rawValue))", action: nil, keyEquivalent: "")
         hotkeyItem.isEnabled = false
@@ -85,7 +85,7 @@ final class StatusBarController {
         menu.addItem(settings)
 
         // Quit
-        let quit = NSMenuItem(title: "Quit Whispr", action: #selector(quitClicked), keyEquivalent: "q")
+        let quit = NSMenuItem(title: "Quit Murmur", action: #selector(quitClicked), keyEquivalent: "q")
         quit.target = self
         menu.addItem(quit)
 
@@ -103,7 +103,7 @@ final class StatusBarController {
     // MARK: - Icon
 
     private func setIcon(_ systemName: String) {
-        statusItem?.button?.image = NSImage(systemSymbolName: systemName, accessibilityDescription: "Whispr")
+        statusItem?.button?.image = NSImage(systemSymbolName: systemName, accessibilityDescription: "Murmur")
         statusItem?.button?.image?.size = NSSize(width: 18, height: 18)
     }
 

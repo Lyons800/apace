@@ -43,9 +43,9 @@ final class LLMProcessor {
 
         self.modelContainer = container
         self.isLoaded = true
-        NSLog("[Whispr] LLM model loaded: \(Self.defaultModelID)")
+        NSLog("[Murmur] LLM model loaded: \(Self.defaultModelID)")
         #else
-        NSLog("[Whispr] LLM not available — add mlx-swift-lm SPM package to enable")
+        NSLog("[Murmur] LLM not available — add mlx-swift-lm SPM package to enable")
         #endif
     }
 
@@ -73,17 +73,17 @@ final class LLMProcessor {
             // Use /no_think prefix to disable Qwen3 chain-of-thought for fast direct output
             let result = try await session.respond(to: "/no_think\n" + text)
             let cleaned = stripLLMArtefacts(result)
-            NSLog("[Whispr] LLM cleaned: '\(text)' → '\(cleaned)'")
+            NSLog("[Murmur] LLM cleaned: '\(text)' → '\(cleaned)'")
 
             // Safety: fall back to original if output is empty or suspiciously long (2x input)
             if cleaned.isEmpty || cleaned.count > text.count * 2 {
-                NSLog("[Whispr] LLM output rejected (empty or >2x length), using original")
+                NSLog("[Murmur] LLM output rejected (empty or >2x length), using original")
                 return text
             }
 
             return cleaned
         } catch {
-            NSLog("[Whispr] LLM processing failed: \(error.localizedDescription)")
+            NSLog("[Murmur] LLM processing failed: \(error.localizedDescription)")
             return text
         }
         #else

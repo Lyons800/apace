@@ -6,6 +6,7 @@ enum VoiceCommand {
     case makeCasual
     case summarize
     case translate(language: String)
+    case custom(SmartMode)
 
     var llmPrompt: String {
         switch self {
@@ -19,6 +20,8 @@ enum VoiceCommand {
             return "Summarize the following text concisely. Output ONLY the summary, nothing else."
         case .translate(let language):
             return "Translate the following text to \(language). Output ONLY the translation, nothing else."
+        case .custom(let mode):
+            return mode.systemPrompt
         }
     }
 }
@@ -32,9 +35,19 @@ struct VoiceCommandParser {
         (["summarize", "summarize this", "summarise", "summarise this"], .summarize),
     ]
 
-    /// Parse transcribed text for a voice command. Returns the command and any remaining text.
-    static func parse(_ text: String) -> (command: VoiceCommand, remainingText: String)? {
+    /// Parse transcribed text for a voice command. Checks user-defined Smart Modes first,
+    /// then falls back to built-in command patterns.
+    static func parse(_ text: String, smartModes: [SmartMode] = []) -> (command: VoiceCommand, remainingText: String)? {
         let lowered = text.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Check user-defined Smart Modes first (enabled ones only)
+        for mode in smartModes where mode.isEnabled {
+            let trigger = mode.triggerPhrase.lowercased()
+            if !trigger.isEmpty && lowered.hasPrefix(trigger) {
+                let remaining = String(text.dropFirst(trigger.count)).trimmingCharacters(in: .whitespacesAndNewlines)
+                return (.custom(mode), remaining)
+            }
+        }
 
         // Check for translate command (special: target language follows the keyword)
         if let range = lowered.range(of: "translate to ") ?? lowered.range(of: "translate into ") {
@@ -44,7 +57,7 @@ struct VoiceCommandParser {
             }
         }
 
-        // Check known command patterns
+        // Check built-in command patterns
         for entry in commandPatterns {
             for pattern in entry.patterns {
                 if lowered.hasPrefix(pattern) {
@@ -70,6 +83,14 @@ struct VoiceCommandParser {
             }
         }
 
+        // Guarantee clipboard restore on all exit paths (crash-safety)
+        defer {
+            pasteboard.clearContents()
+            for (type, data) in savedData {
+                pasteboard.setData(data, forType: type)
+            }
+        }
+
         // Clear and simulate Cmd+C
         pasteboard.clearContents()
 
@@ -87,14 +108,6 @@ struct VoiceCommandParser {
         // Wait for clipboard to update
         try? await Task.sleep(for: .milliseconds(150))
 
-        let selectedText = pasteboard.string(forType: .string)
-
-        // Restore original clipboard
-        pasteboard.clearContents()
-        for (type, data) in savedData {
-            pasteboard.setData(data, forType: type)
-        }
-
-        return selectedText
+        return pasteboard.string(forType: .string)
     }
 }
