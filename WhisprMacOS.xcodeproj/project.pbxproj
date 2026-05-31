@@ -11,6 +11,7 @@
 		BC91B4A32F6B00000024EFF8 /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = BC91B4A12F6B00000024EFF8 /* MLXLLM */; };
 		BC91B4A42F6B00000024EFF8 /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = BC91B4A22F6B00000024EFF8 /* MLXLMCommon */; };
 		BCMU000012F70000A0000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = BCMU000012F70000A0000002 /* Sparkle */; };
+		FACADE000000000000000003 /* FluidAudio in Frameworks */ = {isa = PBXBuildFile; productRef = FACADE000000000000000002 /* FluidAudio */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC91B45F2F6ADE780024EFF8 /* WhisperKit in Frameworks */,
+				FACADE000000000000000003 /* FluidAudio in Frameworks */,
 				BC91B4A32F6B00000024EFF8 /* MLXLLM in Frameworks */,
 				BC91B4A42F6B00000024EFF8 /* MLXLMCommon in Frameworks */,
 				BCMU000012F70000A0000001 /* Sparkle in Frameworks */,
@@ -124,6 +126,7 @@
 			name = Murmur;
 			packageProductDependencies = (
 				BC91B3912F6AE0000024EFF8 /* WhisperKit */,
+				FACADE000000000000000002 /* FluidAudio */,
 				BC91B4A12F6B00000024EFF8 /* MLXLLM */,
 				BC91B4A22F6B00000024EFF8 /* MLXLMCommon */,
 				BCMU000012F70000A0000002 /* Sparkle */,
@@ -212,6 +215,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				BC91B3902F6AE0000024EFF8 /* XCRemoteSwiftPackageReference "WhisperKit" */,
+				FACADE000000000000000001 /* XCRemoteSwiftPackageReference "FluidAudio" */,
 				BC91B4A02F6B00000024EFF8 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */,
 				BCMU000012F70000A0000003 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
@@ -631,6 +635,14 @@
 				minimumVersion = 2.6.0;
 			};
 		};
+		FACADE000000000000000001 /* XCRemoteSwiftPackageReference "FluidAudio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/FluidInference/FluidAudio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.14.7;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -653,6 +665,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BCMU000012F70000A0000003 /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
+		};
+		FACADE000000000000000002 /* FluidAudio */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FACADE000000000000000001 /* XCRemoteSwiftPackageReference "FluidAudio" */;
+			productName = FluidAudio;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
