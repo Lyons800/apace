@@ -11,6 +11,7 @@
 		BC91B4A32F6B00000024EFF8 /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = BC91B4A12F6B00000024EFF8 /* MLXLLM */; };
 		BC91B4A42F6B00000024EFF8 /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = BC91B4A22F6B00000024EFF8 /* MLXLMCommon */; };
 		BCMU000012F70000A0000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = BCMU000012F70000A0000002 /* Sparkle */; };
+		FACADE000000000000000003 /* FluidAudio in Frameworks */ = {isa = PBXBuildFile; productRef = FACADE000000000000000002 /* FluidAudio */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC91B45F2F6ADE780024EFF8 /* WhisperKit in Frameworks */,
+				FACADE000000000000000003 /* FluidAudio in Frameworks */,
 				BC91B4A32F6B00000024EFF8 /* MLXLLM in Frameworks */,
 				BC91B4A42F6B00000024EFF8 /* MLXLMCommon in Frameworks */,
 				BCMU000012F70000A0000001 /* Sparkle in Frameworks */,
@@ -124,6 +126,7 @@
 			name = Murmur;
 			packageProductDependencies = (
 				BC91B3912F6AE0000024EFF8 /* WhisperKit */,
+				FACADE000000000000000002 /* FluidAudio */,
 				BC91B4A12F6B00000024EFF8 /* MLXLLM */,
 				BC91B4A22F6B00000024EFF8 /* MLXLMCommon */,
 				BCMU000012F70000A0000002 /* Sparkle */,
@@ -212,6 +215,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				BC91B3902F6AE0000024EFF8 /* XCRemoteSwiftPackageReference "WhisperKit" */,
+				FACADE000000000000000001 /* XCRemoteSwiftPackageReference "FluidAudio" */,
 				BC91B4A02F6B00000024EFF8 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */,
 				BCMU000012F70000A0000003 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
@@ -343,7 +347,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -401,7 +405,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -415,6 +419,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Murmur/Murmur.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -427,13 +432,13 @@
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Murmur needs microphone access to transcribe your speech";
-				INFOPLIST_KEY_SUFeedURL = "https://github.com/oisinlyons/murmur/releases/latest/download/appcast.xml";
+				INFOPLIST_KEY_SUFeedURL = "https://github.com/Lyons800/murmur/releases/latest/download/appcast.xml";
 				INFOPLIST_KEY_SUPublicEDKey = "zOO/VOlBiXDHXRsNb9W3LcMRFq3ZO8UCcZEoWbGLzFg=";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -452,6 +457,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Murmur/Murmur.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -464,13 +470,13 @@
 				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Murmur needs microphone access to transcribe your speech";
-				INFOPLIST_KEY_SUFeedURL = "https://github.com/oisinlyons/murmur/releases/latest/download/appcast.xml";
+				INFOPLIST_KEY_SUFeedURL = "https://github.com/Lyons800/murmur/releases/latest/download/appcast.xml";
 				INFOPLIST_KEY_SUPublicEDKey = "zOO/VOlBiXDHXRsNb9W3LcMRFq3ZO8UCcZEoWbGLzFg=";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
@@ -491,8 +497,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = BWD692VD35;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -512,8 +518,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = BWD692VD35;
 				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.2;
-				MARKETING_VERSION = 1.0;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app.tests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -532,7 +538,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = BWD692VD35;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -551,7 +557,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = BWD692VD35;
 				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.murmur.app.uitests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -617,8 +623,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ml-explore/mlx-swift-lm.git";
 			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.30.0;
+				kind = revision;
+				revision = 405162196eb484eeaa4afcc7bd354f9b559a11d5;
 			};
 		};
 		BCMU000012F70000A0000003 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
@@ -627,6 +633,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.6.0;
+			};
+		};
+		FACADE000000000000000001 /* XCRemoteSwiftPackageReference "FluidAudio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/FluidInference/FluidAudio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.14.7;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -651,6 +665,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BCMU000012F70000A0000003 /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
+		};
+		FACADE000000000000000002 /* FluidAudio */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FACADE000000000000000001 /* XCRemoteSwiftPackageReference "FluidAudio" */;
+			productName = FluidAudio;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

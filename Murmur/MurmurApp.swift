@@ -1,4 +1,9 @@
 import SwiftUI
+import Speech
+
+extension Notification.Name {
+    static let murmurEngineConfigChanged = Notification.Name("murmurEngineConfigChanged")
+}
 
 @main
 struct MurmurApp: App {
@@ -24,7 +29,7 @@ struct MurmurApp: App {
         .defaultPosition(.center)
 
         Window("Transcribe File", id: "file-transcription") {
-            FileTranscriptionView(transcriptionEngine: appDelegate.transcriptionEngine)
+            FileTranscriptionView(appDelegate: appDelegate)
         }
         .windowResizability(.contentSize)
         .defaultPosition(.center)
@@ -98,7 +103,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
     let audioRecorder = AudioRecorder()
     let textInserter = TextInserter()
     let hotkeyManager: HotkeyManager
-    let transcriptionEngine: TranscriptionEngine
+    var transcriptionEngine: TranscriptionEngineProtocol
     let overlay = TranscriptionOverlay()
     let llmProcessor = LLMProcessor()
     let updateManager = UpdateManager()
@@ -108,15 +113,90 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
     private var streamingTask: Task<Void, Error>?
     private var onboardingWindow: NSWindow?
 
+    /// Tracks the in-flight model load triggered by a reload, so a rapid second
+    /// reload can cancel the previous load before starting a new one.
+    private var engineLoadTask: Task<Void, Never>?
+    /// Set when a reload is requested while a dictation is active. Applied once
+    /// the app returns to idle (`.ready`).
+    private var pendingEngineReload = false
+
     override init() {
         let config = MurmurConfig.load()
-        self.transcriptionEngine = TranscriptionEngine(modelName: config.modelName)
+        self.transcriptionEngine = Self.buildEngine(for: config)
         self.hotkeyManager = HotkeyManager(
             keyCode: config.hotkeyKeyCode,
             modifiers: config.hotkeyModifiers,
             mode: config.recordingMode
         )
         super.init()
+
+        // Apply Settings engine/model changes live, without an app restart.
+        NotificationCenter.default.addObserver(forName: .murmurEngineConfigChanged, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.reloadEngineFromConfig()
+            }
+        }
+    }
+
+    // MARK: - Engine Selection
+
+    /// Apple DictationTranscriber base languages (approximate; ~10 base langs).
+    /// Static to avoid async locale enumeration during init. AppleSpeechEngine
+    /// still guards unsupported locales at load time, and the factory falls back.
+    static let appleSupportedBaseLanguages: Set<String> = [
+        "en", "es", "fr", "de", "it", "pt", "zh", "ja", "ko", "yue"
+    ]
+
+    static func localeID(for language: String) -> String {
+        (language == "auto" || language == "en") ? "en-US" : language
+    }
+
+    static func buildEngine(for config: MurmurConfig) -> TranscriptionEngineProtocol {
+        let osMajor = ProcessInfo.processInfo.operatingSystemVersion.majorVersion
+        let id = EngineSelector.resolve(preference: config.enginePreference,
+                                        osMajor: osMajor,
+                                        language: config.language,
+                                        appleSupported: appleSupportedBaseLanguages)
+        return EngineSelector.makeEngine(id: id, modelName: config.modelName, localeID: localeID(for: config.language))
+    }
+
+    /// Rebuild the engine from the current persisted config and reload its model.
+    /// Called when Settings posts `.murmurEngineConfigChanged`.
+    func reloadEngineFromConfig() {
+        // Never swap the engine out from under an active dictation — the
+        // streaming/final transcription paths read `transcriptionEngine` per
+        // call, so unloading it mid-flight breaks an in-progress transcription.
+        // Defer the reload until the app returns to idle.
+        switch appState.state {
+        case .recording, .transcribing, .inserting:
+            pendingEngineReload = true
+            NSLog("[Murmur] Engine reload deferred (state: \(appState.state.statusText))")
+            return
+        default:
+            break
+        }
+
+        pendingEngineReload = false
+        let config = MurmurConfig.load()
+        let newEngine = Self.buildEngine(for: config)
+        let old = transcriptionEngine
+
+        // Cancel any previous in-flight load before swapping.
+        engineLoadTask?.cancel()
+        old.unload()
+        transcriptionEngine = newEngine
+        NSLog("[Murmur] Engine reloaded: \(newEngine.identifier.rawValue)")
+        engineLoadTask = Task { try? await newEngine.loadModel(progress: nil) }
+    }
+
+    /// Set the app back to `.ready` and, if a reload was deferred while a
+    /// dictation was active, apply it now.
+    private func setReadyAndApplyPendingReload() {
+        appState.state = .ready
+        if pendingEngineReload {
+            NSLog("[Murmur] Applying deferred engine reload")
+            reloadEngineFromConfig()
+        }
     }
 
     private static let onboardingCompleteKey = "murmur_onboarding_complete"
@@ -185,13 +265,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         NSLog("[Murmur] Initializing...")
 
         // Load Whisper model (no permission prompts here)
-        NSLog("[Murmur] Loading model: \(transcriptionEngine.modelName)...")
+        NSLog("[Murmur] Loading model via engine: \(transcriptionEngine.identifier.rawValue)...")
         appState.state = .loading(progress: 0)
 
         do {
             try await transcriptionEngine.loadModel { progress in
                 Task { @MainActor [weak self] in
-                    self?.appState.state = .loading(progress: progress)
+                    guard let self else { return }
+                    // applyingLoadingProgress ignores late callbacks once we've left
+                    // .loading — a final progress(1.0) delivered after we set .ready
+                    // below must not clobber it back to "Downloading model (100%)".
+                    self.appState.state = self.appState.state.applyingLoadingProgress(progress)
                     NSLog("[Murmur] Model download: \(Int(progress * 100))%")
                 }
             }
@@ -415,7 +499,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         guard allSamples.count > 8000 else {
             NSLog("[Murmur] Streaming: too short (\(allSamples.count) samples)")
             if config.playSounds { SoundEffects.playError() }
-            appState.state = .ready
+            setReadyAndApplyPendingReload()
             return
         }
 
@@ -448,7 +532,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             }
 
             NSLog("[Murmur] Filtered hallucination or empty: '\(rawText)'")
-            appState.state = .ready
+            setReadyAndApplyPendingReload()
         } catch {
             // On error, try streaming fallback
             if !lastStreamingText.isEmpty, !isHallucination(lastStreamingText) {
@@ -458,7 +542,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             }
             NSLog("[Murmur] Final transcription error: \(error)")
             if config.playSounds { SoundEffects.playError() }
-            appState.state = .ready
+            setReadyAndApplyPendingReload()
         }
     }
 
@@ -471,7 +555,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         guard samples.count > 8000 else {
             NSLog("[Murmur] Too short (\(samples.count) samples), ignoring")
             if config.playSounds { SoundEffects.playError() }
-            appState.state = .ready
+            setReadyAndApplyPendingReload()
             return
         }
 
@@ -482,7 +566,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
 
         if rmsDb < -50 {
             NSLog("[Murmur] Audio too quiet (silence), ignoring")
-            appState.state = .ready
+            setReadyAndApplyPendingReload()
             return
         }
 
@@ -500,7 +584,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             let trimmed = Self.stripSpecialTokens(result.text)
             guard !trimmed.isEmpty, !isHallucination(trimmed) else {
                 NSLog("[Murmur] Filtered hallucination or empty: '\(trimmed)'")
-                appState.state = .ready
+                setReadyAndApplyPendingReload()
                 return
             }
 
@@ -511,7 +595,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             NSLog("[Murmur] Transcription error: \(error)")
             if config.playSounds { SoundEffects.playError() }
             // Error recovery: return to .ready immediately instead of hanging
-            appState.state = .ready
+            setReadyAndApplyPendingReload()
         }
     }
 
@@ -525,8 +609,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             return
         }
 
-        // Apply custom dictionary replacements
-        var text = CustomDictionary.apply(entries: config.dictionaryEntries, to: rawText)
+        // Partition dictionary entries: safe (regex) vs contextual (LLM)
+        let (safeEntries, contextualEntries) = CustomDictionary.partition(config.dictionaryEntries)
+
+        // Apply safe dictionary replacements via regex
+        var text = CustomDictionary.apply(entries: safeEntries, to: rawText)
 
         // Post-process text with context
         let processor = TextPostProcessor(
@@ -539,9 +626,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         // Optional LLM cleanup
         if config.llmEnabled && llmProcessor.isReady {
             appState.state = .transcribing
-            // Pass dictionary terms to LLM for context
-            llmProcessor.dictionaryTerms = config.dictionaryEntries
+            // Pass safe dictionary terms for guaranteed replacement
+            llmProcessor.dictionaryTerms = safeEntries
+            // Pre-filter contextual entries: only include those whose spoken form appears in the text
+            let relevant = CustomDictionary.relevantContextualEntries(from: contextualEntries, in: processed)
+            llmProcessor.contextualDictionaryEntries = relevant
+            if !relevant.isEmpty {
+                NSLog("[Murmur] \(relevant.count) contextual dictionary entries injected into LLM prompt")
+            }
+            let llmStart = CFAbsoluteTimeGetCurrent()
             processed = await llmProcessor.process(text: processed, context: context)
+            let llmElapsed = (CFAbsoluteTimeGetCurrent() - llmStart) * 1000
+            NSLog("[Murmur] LLM processing took %.0fms", llmElapsed)
+            // Write timing to file for debugging
+            let logLine = "\(Date()): LLM took \(Int(llmElapsed))ms for \(processed.count) chars\n"
+            if let data = logLine.data(using: .utf8) {
+                let logPath = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library/Application Support/Murmur/llm_timing.log")
+                if FileManager.default.fileExists(atPath: logPath.path) {
+                    if let handle = try? FileHandle(forWritingTo: logPath) {
+                        handle.seekToEndOfFile()
+                        handle.write(data)
+                        handle.closeFile()
+                    }
+                } else {
+                    try? data.write(to: logPath)
+                }
+            }
+        } else if !contextualEntries.isEmpty {
+            // LLM disabled — fall back to regex for all entries (preserves current behavior)
+            processed = CustomDictionary.apply(entries: contextualEntries, to: processed)
         }
 
         NSLog("[Murmur] Final text: \(processed)")
@@ -561,7 +674,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             pasteboard.setString(processed, forType: .string)
             appState.lastTranscription = processed
             if config.playSounds { SoundEffects.playStop() }
-            appState.state = .ready
+            setReadyAndApplyPendingReload()
 
             // Prompt for accessibility once (not every time)
             if !UserDefaults.standard.bool(forKey: "murmur_accessibility_prompted") {
@@ -579,7 +692,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
 
         appState.lastTranscription = processed
         if config.playSounds { SoundEffects.playStop() }
-        appState.state = .ready
+        setReadyAndApplyPendingReload()
     }
 
     // MARK: - Voice Commands
@@ -591,7 +704,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         guard let selectedText = await VoiceCommandParser.captureSelectedText(), !selectedText.isEmpty else {
             NSLog("[Murmur] No text selected for voice command")
             if config.playSounds { SoundEffects.playError() }
-            appState.state = .ready
+            setReadyAndApplyPendingReload()
             return
         }
 
@@ -604,7 +717,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
 
         appState.lastTranscription = result
         if config.playSounds { SoundEffects.playStop() }
-        appState.state = .ready
+        setReadyAndApplyPendingReload()
     }
 
     // MARK: - Hallucination Filter

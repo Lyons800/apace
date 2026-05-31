@@ -6,7 +6,7 @@
 //
 
 import Testing
-@testable import WhisprMacOS
+@testable import Murmur
 
 struct WhisprMacOSTests {
 

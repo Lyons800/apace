@@ -24,6 +24,7 @@ struct MurmurConfig: Codable {
     var historyEnabled: Bool = true
     var smartModes: [SmartMode] = SmartMode.defaults
     var muteMediaDuringRecording: Bool = false
+    var enginePreference: EnginePreference = .automatic
 
     static let `default` = MurmurConfig()
 
@@ -50,6 +51,37 @@ struct MurmurConfig: Codable {
         if let data = try? JSONEncoder().encode(self) {
             UserDefaults.standard.set(data, forKey: MurmurConfig.storageKey)
         }
+    }
+}
+
+// MARK: - Backward-compatible decoding
+// Placed in an extension so the struct retains its synthesized memberwise init().
+// A custom init(from:) inside the struct body would suppress memberwise init synthesis,
+// breaking callers such as `MurmurConfig()` and `MurmurConfig.default`.
+// Using decodeIfPresent for every field means legacy configs (persisted before any
+// given field was added) still decode successfully instead of throwing keyNotFound
+// and losing the user's entire saved configuration.
+extension MurmurConfig {
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        modelName                = try c.decodeIfPresent(String.self,             forKey: .modelName)                ?? "base.en"
+        language                 = try c.decodeIfPresent(String.self,             forKey: .language)                 ?? "en"
+        recordingMode            = try c.decodeIfPresent(RecordingMode.self,      forKey: .recordingMode)            ?? .hold
+        hotkeyKeyCode            = try c.decodeIfPresent(UInt16.self,             forKey: .hotkeyKeyCode)            ?? UInt16(kVK_RightOption)
+        hotkeyModifiers          = try c.decodeIfPresent(UInt.self,               forKey: .hotkeyModifiers)          ?? 0
+        playSounds               = try c.decodeIfPresent(Bool.self,               forKey: .playSounds)               ?? true
+        autoCapitalize           = try c.decodeIfPresent(Bool.self,               forKey: .autoCapitalize)           ?? true
+        convertPunctuation       = try c.decodeIfPresent(Bool.self,               forKey: .convertPunctuation)       ?? true
+        removeFiller             = try c.decodeIfPresent(Bool.self,               forKey: .removeFiller)             ?? false
+        clipboardRestoreDelay    = try c.decodeIfPresent(TimeInterval.self,       forKey: .clipboardRestoreDelay)    ?? 0.2
+        useStreaming             = try c.decodeIfPresent(Bool.self,               forKey: .useStreaming)             ?? true
+        llmEnabled               = try c.decodeIfPresent(Bool.self,               forKey: .llmEnabled)               ?? false
+        launchAtLogin            = try c.decodeIfPresent(Bool.self,               forKey: .launchAtLogin)            ?? false
+        dictionaryEntries        = try c.decodeIfPresent([DictionaryEntry].self,  forKey: .dictionaryEntries)        ?? []
+        historyEnabled           = try c.decodeIfPresent(Bool.self,               forKey: .historyEnabled)           ?? true
+        smartModes               = try c.decodeIfPresent([SmartMode].self,        forKey: .smartModes)               ?? SmartMode.defaults
+        muteMediaDuringRecording = try c.decodeIfPresent(Bool.self,               forKey: .muteMediaDuringRecording) ?? false
+        enginePreference         = try c.decodeIfPresent(EnginePreference.self,   forKey: .enginePreference)         ?? .automatic
     }
 }
 

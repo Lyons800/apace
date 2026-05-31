@@ -31,6 +31,10 @@ struct SettingsView: View {
         .onChange(of: config.llmEnabled) { _, _ in config.save() }
         .onChange(of: config.historyEnabled) { _, _ in config.save() }
         .onChange(of: config.muteMediaDuringRecording) { _, _ in config.save() }
+        .onChange(of: config.enginePreference) { _, _ in
+            config.save()
+            NotificationCenter.default.post(name: .murmurEngineConfigChanged, object: nil)
+        }
         .onChange(of: config.launchAtLogin) { _, newValue in
             config.save()
             setLaunchAtLogin(newValue)
@@ -67,6 +71,17 @@ struct SettingsView: View {
             }
 
             Section("Model") {
+                let engineAvail = ModelManager.availability(osMajor: ProcessInfo.processInfo.operatingSystemVersion.majorVersion)
+
+                Picker("Engine", selection: $config.enginePreference) {
+                    Text("Recommended (Automatic)").tag(EnginePreference.automatic)
+                    Text(ModelManager.displayName(.parakeet)).tag(EnginePreference.parakeet)
+                    Text(ModelManager.displayName(.whisperKit)).tag(EnginePreference.whisperKit)
+                    if engineAvail[.appleSpeech] == true {
+                        Text(ModelManager.displayName(.appleSpeech)).tag(EnginePreference.appleSpeech)
+                    }
+                }
+
                 Picker("Language", selection: $config.language) {
                     Text("English").tag("en")
                     Divider()
@@ -94,6 +109,7 @@ struct SettingsView: View {
                         config.modelName = String(config.modelName.dropLast(3)) // base.en → base
                     }
                     config.save()
+                    NotificationCenter.default.post(name: .murmurEngineConfigChanged, object: nil)
                 }
 
                 Picker("Model", selection: $config.modelName) {
@@ -110,7 +126,10 @@ struct SettingsView: View {
                         Text("large-v3 (3 GB, best multilingual)").tag("large-v3")
                     }
                 }
-                .onChange(of: config.modelName) { _, _ in config.save() }
+                .onChange(of: config.modelName) { _, _ in
+                    config.save()
+                    NotificationCenter.default.post(name: .murmurEngineConfigChanged, object: nil)
+                }
 
                 if config.language == "en" {
                     Text("Use .en models for English. base.en is recommended for real-time use.")
@@ -192,6 +211,15 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
+            // Warning when contextual entries exist but LLM is disabled
+            if !config.llmEnabled && config.dictionaryEntries.contains(where: { !$0.isSafe }) {
+                Section {
+                    Label("Context-aware entries require LLM to be enabled. They will fall back to simple replacement.", systemImage: "exclamationmark.triangle.fill")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                }
+            }
+
             Section("Custom Terms") {
                 if config.dictionaryEntries.isEmpty {
                     Text("No custom terms added yet.")
@@ -199,25 +227,48 @@ struct SettingsView: View {
                         .foregroundStyle(.tertiary)
                 } else {
                     ForEach($config.dictionaryEntries) { $entry in
-                        HStack(spacing: 8) {
-                            TextField("Spoken", text: $entry.spoken)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(maxWidth: .infinity)
-                            Image(systemName: "arrow.right")
-                                .foregroundStyle(.secondary)
-                                .font(.caption)
-                            TextField("Replacement", text: $entry.replacement)
-                                .textFieldStyle(.roundedBorder)
-                                .frame(maxWidth: .infinity)
-                            Button {
-                                config.dictionaryEntries.removeAll { $0.id == entry.id }
-                                config.save()
-                            } label: {
-                                Image(systemName: "minus.circle.fill")
-                                    .foregroundStyle(.red.opacity(0.7))
+                        VStack(alignment: .leading, spacing: 6) {
+                            HStack(spacing: 8) {
+                                TextField("Spoken", text: $entry.spoken)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(maxWidth: .infinity)
+                                    .onChange(of: entry.spoken) { _, _ in
+                                        CustomDictionary.autoClassify(&entry)
+                                    }
+                                Image(systemName: "arrow.right")
+                                    .foregroundStyle(.secondary)
+                                    .font(.caption)
+                                TextField("Replacement", text: $entry.replacement)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(maxWidth: .infinity)
+                                // Safe/contextual indicator
+                                Button {
+                                    entry.isSafe.toggle()
+                                    entry.safeOverridden = true
+                                } label: {
+                                    Image(systemName: entry.isSafe ? "bolt.fill" : "brain.head.profile")
+                                        .foregroundStyle(entry.isSafe ? .green : .orange)
+                                        .font(.caption)
+                                        .help(entry.isSafe ? "Safe: always replaced via text matching" : "Contextual: LLM decides based on context")
+                                }
+                                .buttonStyle(.plain)
+                                Button {
+                                    config.dictionaryEntries.removeAll { $0.id == entry.id }
+                                    config.save()
+                                } label: {
+                                    Image(systemName: "minus.circle.fill")
+                                        .foregroundStyle(.red.opacity(0.7))
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
+                            HStack(spacing: 8) {
+                                TextField("Description (e.g. \"a person's name\")", text: $entry.context)
+                                    .textFieldStyle(.roundedBorder)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
+                        .padding(.vertical, 2)
                     }
                 }
 

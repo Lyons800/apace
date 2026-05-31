@@ -15,12 +15,12 @@ struct FileTranscriptionResult {
 }
 
 final class FileTranscriber {
-    private let transcriptionEngine: TranscriptionEngine
+    private let transcriptionEngine: TranscriptionEngineProtocol
 
     /// Supported audio/video file extensions
     static let supportedExtensions: Set<String> = ["mp3", "wav", "m4a", "aac", "flac", "mp4", "mov", "mkv", "webm"]
 
-    init(transcriptionEngine: TranscriptionEngine) {
+    init(transcriptionEngine: TranscriptionEngineProtocol) {
         self.transcriptionEngine = transcriptionEngine
     }
 
@@ -52,15 +52,30 @@ final class FileTranscriber {
 
             let result = try await transcriptionEngine.transcribe(
                 audioSamples: chunk,
-                language: language
+                language: language,
+                promptText: nil
             )
 
-            for segment in result.segments {
-                allSegments.append(FileTranscriptionSegment(
-                    text: segment.text.trimmingCharacters(in: .whitespacesAndNewlines),
-                    startTime: chunkStartTime + segment.start,
-                    endTime: chunkStartTime + segment.end
-                ))
+            if result.segments.isEmpty {
+                // Engines like Parakeet / AppleSpeech return only `.text` with no
+                // segments. Synthesize a single segment spanning this chunk so the
+                // file transcript isn't empty.
+                let trimmed = result.text.trimmingCharacters(in: .whitespacesAndNewlines)
+                if !trimmed.isEmpty {
+                    allSegments.append(FileTranscriptionSegment(
+                        text: trimmed,
+                        startTime: chunkStartTime,
+                        endTime: chunkStartTime + Double(chunk.count) / sampleRate
+                    ))
+                }
+            } else {
+                for segment in result.segments {
+                    allSegments.append(FileTranscriptionSegment(
+                        text: segment.text.trimmingCharacters(in: .whitespacesAndNewlines),
+                        startTime: chunkStartTime + segment.start,
+                        endTime: chunkStartTime + segment.end
+                    ))
+                }
             }
 
             // Advance past the chunk, minus overlap for context continuity

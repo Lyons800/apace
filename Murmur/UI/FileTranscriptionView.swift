@@ -2,7 +2,10 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct FileTranscriptionView: View {
-    var transcriptionEngine: TranscriptionEngine?
+    /// Held by reference so we read the CURRENT engine at transcribe time.
+    /// Capturing `appDelegate.transcriptionEngine` by value at scene-init would
+    /// go stale (unloaded) after an engine switch in Settings.
+    let appDelegate: AppDelegate
     @State private var result: FileTranscriptionResult?
     @State private var isTranscribing = false
     @State private var progress: Double = 0
@@ -176,12 +179,14 @@ struct FileTranscriptionView: View {
             do {
                 let config = MurmurConfig.load()
 
-                // Reuse the app's engine if available, otherwise create a new one
-                let engine: TranscriptionEngine
-                if let shared = transcriptionEngine, shared.isModelLoaded {
+                // Reuse the app's CURRENT engine if loaded, otherwise create a new one.
+                // Read it lazily here so an engine switch in Settings is picked up.
+                let engine: TranscriptionEngineProtocol
+                let shared = appDelegate.transcriptionEngine
+                if shared.isModelLoaded {
                     engine = shared
                 } else {
-                    engine = TranscriptionEngine(modelName: config.modelName)
+                    engine = WhisperKitEngine(modelName: config.modelName)
                     try await engine.loadModel { p in
                         Task { @MainActor in progress = p * 0.3 }
                     }

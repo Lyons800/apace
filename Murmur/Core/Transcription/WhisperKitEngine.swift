@@ -1,7 +1,8 @@
 import WhisperKit
 import Foundation
 
-final class TranscriptionEngine {
+final class WhisperKitEngine: TranscriptionEngineProtocol {
+    let identifier: EngineID = .whisperKit
     private var whisperKit: WhisperKit?
     private(set) var isModelLoaded = false
     private(set) var modelName: String
@@ -35,7 +36,7 @@ final class TranscriptionEngine {
         return modelsDir
     }
 
-    func loadModel(progressCallback: ((Double) -> Void)? = nil) async throws {
+    func loadModel(progress: ((Double) -> Void)? = nil) async throws {
         // Clean any corrupted metadata files before attempting download
         Self.cleanCorruptedMetadata()
 
@@ -110,7 +111,12 @@ final class TranscriptionEngine {
         modelName = newModel
         isModelLoaded = false
         whisperKit = nil
-        try await loadModel()
+        try await loadModel(progress: nil)
+    }
+
+    func unload() {
+        whisperKit = nil
+        isModelLoaded = false
     }
 
     /// Build prompt tokens from a text hint string for WhisperKit's conditional generation.
@@ -152,14 +158,3 @@ final class TranscriptionEngine {
     }
 }
 
-enum TranscriptionEngineError: LocalizedError {
-    case modelNotLoaded
-    case transcriptionFailed
-
-    var errorDescription: String? {
-        switch self {
-        case .modelNotLoaded: return "Whisper model not loaded"
-        case .transcriptionFailed: return "Transcription produced no results"
-        }
-    }
-}

@@ -15,6 +15,11 @@ final class HotkeyManager {
     private var mode: RecordingMode
     private var isToggled = false
 
+    /// Test hooks (internal; visible via @testable import). A modifier hotkey must
+    /// install BOTH a global and a local monitor, or it dies when Murmur is frontmost.
+    var hasLocalMonitorForTesting: Bool { localMonitor != nil }
+    var hasFlagsMonitorForTesting: Bool { flagsMonitor != nil }
+
     init(keyCode: UInt16 = UInt16(kVK_RightOption), modifiers: UInt = 0, mode: RecordingMode = .hold) {
         self.targetKeyCode = keyCode
         self.targetModifiers = modifiers
@@ -30,6 +35,16 @@ final class HotkeyManager {
         if isModifierKey {
             flagsMonitor = NSEvent.addGlobalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
                 self?.handleFlagsChanged(event)
+            }
+            // Global monitors do NOT fire while Murmur itself is the frontmost app
+            // (Settings/onboarding/file-transcribe window open, or the menu bar was
+            // just clicked). Without a LOCAL monitor too, the modifier hotkey silently
+            // stops working whenever Murmur has focus — and a press/release missed in
+            // that window leaves `isModifierKeyDown` desynced. The key-code branch below
+            // already pairs global+local for exactly this reason; modifiers need it too.
+            localMonitor = NSEvent.addLocalMonitorForEvents(matching: .flagsChanged) { [weak self] event in
+                self?.handleFlagsChanged(event)
+                return event
             }
         } else {
             globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.keyDown, .keyUp]) { [weak self] event in
