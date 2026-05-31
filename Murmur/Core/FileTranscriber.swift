@@ -15,12 +15,12 @@ struct FileTranscriptionResult {
 }
 
 final class FileTranscriber {
-    private let transcriptionEngine: TranscriptionEngine
+    private let transcriptionEngine: TranscriptionEngineProtocol
 
     /// Supported audio/video file extensions
     static let supportedExtensions: Set<String> = ["mp3", "wav", "m4a", "aac", "flac", "mp4", "mov", "mkv", "webm"]
 
-    init(transcriptionEngine: TranscriptionEngine) {
+    init(transcriptionEngine: TranscriptionEngineProtocol) {
         self.transcriptionEngine = transcriptionEngine
     }
 
@@ -52,7 +52,8 @@ final class FileTranscriber {
 
             let result = try await transcriptionEngine.transcribe(
                 audioSamples: chunk,
-                language: language
+                language: language,
+                promptText: nil
             )
 
             for segment in result.segments {
