@@ -12,7 +12,7 @@ struct OnboardingView: View {
                 .font(.system(size: 64))
                 .foregroundStyle(.blue)
 
-            Text("Welcome to Murmur")
+            Text("Welcome to Sona")
                 .font(.title)
                 .fontWeight(.semibold)
 
@@ -63,7 +63,7 @@ struct OnboardingView: View {
             .disabled(!hasMic)
 
             if !hasMic {
-                Text("Microphone access is required to use Murmur.")
+                Text("Microphone access is required to use Sona.")
                     .font(.caption)
                     .foregroundStyle(.red)
             } else if !hasAccessibility {

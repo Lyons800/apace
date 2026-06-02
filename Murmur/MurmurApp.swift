@@ -87,7 +87,7 @@ struct MenuBarView: View {
         }
         .disabled(!appDelegate.updateManager.canCheckForUpdates)
 
-        Button("Quit Murmur") {
+        Button("Quit Sona") {
             appDelegate.shutdown()
             NSApplication.shared.terminate(nil)
         }
@@ -170,7 +170,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         switch appState.state {
         case .recording, .transcribing, .inserting:
             pendingEngineReload = true
-            NSLog("[Murmur] Engine reload deferred (state: \(appState.state.statusText))")
+            NSLog("[Sona] Engine reload deferred (state: \(appState.state.statusText))")
             return
         default:
             break
@@ -185,7 +185,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         engineLoadTask?.cancel()
         old.unload()
         transcriptionEngine = newEngine
-        NSLog("[Murmur] Engine reloaded: \(newEngine.identifier.rawValue)")
+        NSLog("[Sona] Engine reloaded: \(newEngine.identifier.rawValue)")
         engineLoadTask = Task { try? await newEngine.loadModel(progress: nil) }
     }
 
@@ -194,12 +194,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
     private func setReadyAndApplyPendingReload() {
         appState.state = .ready
         if pendingEngineReload {
-            NSLog("[Murmur] Applying deferred engine reload")
+            NSLog("[Sona] Applying deferred engine reload")
             reloadEngineFromConfig()
         }
     }
 
-    private static let onboardingCompleteKey = "murmur_onboarding_complete"
+    private static let onboardingCompleteKey = "sona_onboarding_complete"
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Check current permission state without prompting
@@ -210,7 +210,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
 
         if !onboardingDone || !appState.hasMicrophonePermission {
             // Show onboarding — permissions are requested there by user action
-            NSLog("[Murmur] Showing onboarding...")
+            NSLog("[Sona] Showing onboarding...")
             showOnboardingWindow()
         } else {
             // Already onboarded with mic permission — go straight to loading
@@ -231,7 +231,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             backing: .buffered,
             defer: false
         )
-        window.title = "Murmur"
+        window.title = "Sona"
         window.contentView = NSHostingView(rootView: onboardingView)
         window.center()
         window.isReleasedWhenClosed = false
@@ -262,10 +262,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
     // MARK: - Initialization
 
     private func loadModelAndStart() async {
-        NSLog("[Murmur] Initializing...")
+        NSLog("[Sona] Initializing...")
 
         // Load Whisper model (no permission prompts here)
-        NSLog("[Murmur] Loading model via engine: \(transcriptionEngine.identifier.rawValue)...")
+        NSLog("[Sona] Loading model via engine: \(transcriptionEngine.identifier.rawValue)...")
         appState.state = .loading(progress: 0)
 
         do {
@@ -276,14 +276,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
                     // .loading — a final progress(1.0) delivered after we set .ready
                     // below must not clobber it back to "Downloading model (100%)".
                     self.appState.state = self.appState.state.applyingLoadingProgress(progress)
-                    NSLog("[Murmur] Model download: \(Int(progress * 100))%")
+                    NSLog("[Sona] Model download: \(Int(progress * 100))%")
                 }
             }
             appState.state = .ready
-            NSLog("[Murmur] Model loaded. Ready!")
+            NSLog("[Sona] Model loaded. Ready!")
         } catch {
             appState.state = .error(error.localizedDescription)
-            NSLog("[Murmur] Model load failed: \(error.localizedDescription)")
+            NSLog("[Sona] Model load failed: \(error.localizedDescription)")
             return
         }
 
@@ -293,10 +293,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             Task {
                 do {
                     try await llmProcessor.loadModel { progress in
-                        NSLog("[Murmur] LLM download: \(Int(progress * 100))%")
+                        NSLog("[Sona] LLM download: \(Int(progress * 100))%")
                     }
                 } catch {
-                    NSLog("[Murmur] LLM load failed (non-fatal): \(error.localizedDescription)")
+                    NSLog("[Sona] LLM load failed (non-fatal): \(error.localizedDescription)")
                 }
             }
         }
@@ -305,12 +305,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         do {
             try audioRecorder.warmUp()
         } catch {
-            NSLog("[Murmur] Audio warm-up failed (non-fatal): \(error.localizedDescription)")
+            NSLog("[Sona] Audio warm-up failed (non-fatal): \(error.localizedDescription)")
         }
 
         // Set up hotkey
         setupHotkey()
-        NSLog("[Murmur] Hotkey active. Hold Right Option to record.")
+        NSLog("[Sona] Hotkey active. Hold Right Option to record.")
     }
 
     // MARK: - Hotkey
@@ -335,17 +335,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
 
     private func startRecording() async {
         guard appState.state == .ready else {
-            NSLog("[Murmur] Cannot record — state is \(appState.state.statusText)")
+            NSLog("[Sona] Cannot record — state is \(appState.state.statusText)")
             return
         }
 
         // Check microphone permission at point of use
         if !Permissions.checkMicrophone() {
-            NSLog("[Murmur] Microphone permission not granted, requesting...")
+            NSLog("[Sona] Microphone permission not granted, requesting...")
             let granted = await Permissions.requestMicrophone()
             appState.hasMicrophonePermission = granted
             if !granted {
-                NSLog("[Murmur] Microphone permission denied")
+                NSLog("[Sona] Microphone permission denied")
                 appState.state = .error("Microphone access required")
                 SoundEffects.playError()
                 try? await Task.sleep(for: .seconds(2))
@@ -368,7 +368,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
                 try startStreamingRecording(config: config)
                 return
             } catch {
-                NSLog("[Murmur] Streaming init failed, falling back to batch: \(error)")
+                NSLog("[Sona] Streaming init failed, falling back to batch: \(error)")
             }
         }
 
@@ -381,10 +381,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             }
             appState.state = .recording
             menuBarIcon = "waveform.circle.fill"
-            NSLog("[Murmur] Recording started (batch mode)")
+            NSLog("[Sona] Recording started (batch mode)")
         } catch {
             appState.state = .error(error.localizedDescription)
-            NSLog("[Murmur] Recording failed: \(error)")
+            NSLog("[Sona] Recording failed: \(error)")
         }
     }
 
@@ -427,7 +427,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
                 let rms = samples.reduce(0.0) { $0 + $1 * $1 } / Float(samples.count)
                 let rmsDb = 10 * log10(max(rms, 1e-10))
                 if rmsDb < -45 {
-                    NSLog("[Murmur] Streaming tick: audio too quiet (\(String(format: "%.1f", rmsDb)) dB), skipping")
+                    NSLog("[Sona] Streaming tick: audio too quiet (\(String(format: "%.1f", rmsDb)) dB), skipping")
                     continue
                 }
 
@@ -445,12 +445,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
                         self.overlay.update(confirmed: text, unconfirmed: "")
                     }
                 } catch {
-                    NSLog("[Murmur] Streaming transcription tick failed: \(error.localizedDescription)")
+                    NSLog("[Sona] Streaming transcription tick failed: \(error.localizedDescription)")
                 }
             }
         }
 
-        NSLog("[Murmur] Recording started (streaming mode)")
+        NSLog("[Sona] Recording started (streaming mode)")
     }
 
     private func stopRecordingAndTranscribe() async {
@@ -472,7 +472,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
 
         // Detect context before processing
         let context = ContextDetector.detectContext()
-        NSLog("[Murmur] Detected context: \(context.rawValue)")
+        NSLog("[Sona] Detected context: \(context.rawValue)")
 
         if appState.isStreaming {
             await stopStreamingAndInsert(config: config, context: context)
@@ -497,7 +497,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         appState.isStreaming = false
 
         guard allSamples.count > 8000 else {
-            NSLog("[Murmur] Streaming: too short (\(allSamples.count) samples)")
+            NSLog("[Sona] Streaming: too short (\(allSamples.count) samples)")
             if config.playSounds { SoundEffects.playError() }
             setReadyAndApplyPendingReload()
             return
@@ -505,7 +505,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
 
         // Trim trailing silence for cleaner final transcription
         let samples = Self.trimTrailingSilence(allSamples, threshold: 0.005, minTrailingSamples: 8000)
-        NSLog("[Murmur] Trimmed audio: \(allSamples.count) → \(samples.count) samples")
+        NSLog("[Sona] Trimmed audio: \(allSamples.count) → \(samples.count) samples")
 
         // Do one final full transcription on trimmed audio (most accurate)
         appState.state = .transcribing
@@ -519,28 +519,28 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             let rawText = Self.stripSpecialTokens(result.text)
 
             if !rawText.isEmpty, !isHallucination(rawText) {
-                NSLog("[Murmur] Final transcription (\(String(format: "%.1f", result.duration))s): \(rawText)")
+                NSLog("[Sona] Final transcription (\(String(format: "%.1f", result.duration))s): \(rawText)")
                 await processAndInsert(rawText: rawText, config: config, context: context)
                 return
             }
 
             // Final transcription was empty — fall back to last streaming result
             if !lastStreamingText.isEmpty, !isHallucination(lastStreamingText) {
-                NSLog("[Murmur] Final transcription empty, using last streaming result: '\(lastStreamingText)'")
+                NSLog("[Sona] Final transcription empty, using last streaming result: '\(lastStreamingText)'")
                 await processAndInsert(rawText: lastStreamingText, config: config, context: context)
                 return
             }
 
-            NSLog("[Murmur] Filtered hallucination or empty: '\(rawText)'")
+            NSLog("[Sona] Filtered hallucination or empty: '\(rawText)'")
             setReadyAndApplyPendingReload()
         } catch {
             // On error, try streaming fallback
             if !lastStreamingText.isEmpty, !isHallucination(lastStreamingText) {
-                NSLog("[Murmur] Final transcription error, using last streaming result: '\(lastStreamingText)'")
+                NSLog("[Sona] Final transcription error, using last streaming result: '\(lastStreamingText)'")
                 await processAndInsert(rawText: lastStreamingText, config: config, context: context)
                 return
             }
-            NSLog("[Murmur] Final transcription error: \(error)")
+            NSLog("[Sona] Final transcription error: \(error)")
             if config.playSounds { SoundEffects.playError() }
             setReadyAndApplyPendingReload()
         }
@@ -553,7 +553,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
 
         // Need at least 0.5s of audio (8000 samples at 16kHz)
         guard samples.count > 8000 else {
-            NSLog("[Murmur] Too short (\(samples.count) samples), ignoring")
+            NSLog("[Sona] Too short (\(samples.count) samples), ignoring")
             if config.playSounds { SoundEffects.playError() }
             setReadyAndApplyPendingReload()
             return
@@ -562,16 +562,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         // Check audio energy
         let rms = samples.reduce(0) { $0 + $1 * $1 } / Float(samples.count)
         let rmsDb = 10 * log10(max(rms, 1e-10))
-        NSLog("[Murmur] Audio RMS: \(String(format: "%.1f", rmsDb)) dB (\(samples.count) samples)")
+        NSLog("[Sona] Audio RMS: \(String(format: "%.1f", rmsDb)) dB (\(samples.count) samples)")
 
         if rmsDb < -50 {
-            NSLog("[Murmur] Audio too quiet (silence), ignoring")
+            NSLog("[Sona] Audio too quiet (silence), ignoring")
             setReadyAndApplyPendingReload()
             return
         }
 
         appState.state = .transcribing
-        NSLog("[Murmur] Transcribing \(samples.count) samples...")
+        NSLog("[Sona] Transcribing \(samples.count) samples...")
 
         do {
             let promptHint = CustomDictionary.promptHint(from: config.dictionaryEntries)
@@ -583,16 +583,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
 
             let trimmed = Self.stripSpecialTokens(result.text)
             guard !trimmed.isEmpty, !isHallucination(trimmed) else {
-                NSLog("[Murmur] Filtered hallucination or empty: '\(trimmed)'")
+                NSLog("[Sona] Filtered hallucination or empty: '\(trimmed)'")
                 setReadyAndApplyPendingReload()
                 return
             }
 
-            NSLog("[Murmur] Batch result (\(String(format: "%.1f", result.duration))s): \(trimmed)")
+            NSLog("[Sona] Batch result (\(String(format: "%.1f", result.duration))s): \(trimmed)")
             await processAndInsert(rawText: trimmed, config: config, context: context)
 
         } catch {
-            NSLog("[Murmur] Transcription error: \(error)")
+            NSLog("[Sona] Transcription error: \(error)")
             if config.playSounds { SoundEffects.playError() }
             // Error recovery: return to .ready immediately instead of hanging
             setReadyAndApplyPendingReload()
@@ -604,7 +604,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
     private func processAndInsert(rawText: String, config: MurmurConfig, context: AppContext) async {
         // Check for voice commands
         if config.llmEnabled, llmProcessor.isReady, let parsed = VoiceCommandParser.parse(rawText, smartModes: config.smartModes) {
-            NSLog("[Murmur] Voice command detected: \(parsed.command)")
+            NSLog("[Sona] Voice command detected: \(parsed.command)")
             await handleVoiceCommand(parsed.command, config: config)
             return
         }
@@ -632,12 +632,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             let relevant = CustomDictionary.relevantContextualEntries(from: contextualEntries, in: processed)
             llmProcessor.contextualDictionaryEntries = relevant
             if !relevant.isEmpty {
-                NSLog("[Murmur] \(relevant.count) contextual dictionary entries injected into LLM prompt")
+                NSLog("[Sona] \(relevant.count) contextual dictionary entries injected into LLM prompt")
             }
             let llmStart = CFAbsoluteTimeGetCurrent()
             processed = await llmProcessor.process(text: processed, context: context)
             let llmElapsed = (CFAbsoluteTimeGetCurrent() - llmStart) * 1000
-            NSLog("[Murmur] LLM processing took %.0fms", llmElapsed)
+            NSLog("[Sona] LLM processing took %.0fms", llmElapsed)
             // Write timing to file for debugging
             let logLine = "\(Date()): LLM took \(Int(llmElapsed))ms for \(processed.count) chars\n"
             if let data = logLine.data(using: .utf8) {
@@ -657,7 +657,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
             processed = CustomDictionary.apply(entries: contextualEntries, to: processed)
         }
 
-        NSLog("[Murmur] Final text: \(processed)")
+        NSLog("[Sona] Final text: \(processed)")
 
         // Save to history
         if config.historyEnabled {
@@ -667,7 +667,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         // Check accessibility before inserting — request only at point of use
         if !Permissions.checkAccessibility() {
             appState.hasAccessibilityPermission = false
-            NSLog("[Murmur] Accessibility not granted — copying to clipboard only")
+            NSLog("[Sona] Accessibility not granted — copying to clipboard only")
             // Graceful degradation: copy to clipboard, user can paste manually
             let pasteboard = NSPasteboard.general
             pasteboard.clearContents()
@@ -698,11 +698,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
     // MARK: - Voice Commands
 
     private func handleVoiceCommand(_ command: VoiceCommand, config: MurmurConfig) async {
-        NSLog("[Murmur] Executing voice command...")
+        NSLog("[Sona] Executing voice command...")
 
         // Capture selected text from the active app
         guard let selectedText = await VoiceCommandParser.captureSelectedText(), !selectedText.isEmpty else {
-            NSLog("[Murmur] No text selected for voice command")
+            NSLog("[Sona] No text selected for voice command")
             if config.playSounds { SoundEffects.playError() }
             setReadyAndApplyPendingReload()
             return

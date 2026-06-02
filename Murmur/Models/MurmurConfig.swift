@@ -28,8 +28,8 @@ struct MurmurConfig: Codable {
 
     static let `default` = MurmurConfig()
 
-    private static let storageKey = "murmur_config"
-    private static let legacyStorageKey = "whispr_config"
+    private static let storageKey = "sona_config"
+    private static let legacyStorageKey = "murmur_config"
 
     static func load() -> MurmurConfig {
         // Try new key first, then fall back to legacy key for migration

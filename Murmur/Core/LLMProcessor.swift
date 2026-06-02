@@ -45,9 +45,9 @@ final class LLMProcessor {
 
         self.modelContainer = container
         self.isLoaded = true
-        NSLog("[Murmur] LLM model loaded: \(Self.defaultModelID)")
+        NSLog("[Sona] LLM model loaded: \(Self.defaultModelID)")
         #else
-        NSLog("[Murmur] LLM not available — add mlx-swift-lm SPM package to enable")
+        NSLog("[Sona] LLM not available — add mlx-swift-lm SPM package to enable")
         #endif
     }
 
@@ -75,17 +75,17 @@ final class LLMProcessor {
             // Append /no_think to disable chain-of-thought for fast direct output
             let result = try await session.respond(to: text + " /no_think")
             let cleaned = stripLLMArtefacts(result)
-            NSLog("[Murmur] LLM cleaned: '\(text)' → '\(cleaned)'")
+            NSLog("[Sona] LLM cleaned: '\(text)' → '\(cleaned)'")
 
             // Safety: fall back to original if output is empty or suspiciously long (2x input)
             if cleaned.isEmpty || cleaned.count > text.count * 2 {
-                NSLog("[Murmur] LLM output rejected (empty or >2x length), using original")
+                NSLog("[Sona] LLM output rejected (empty or >2x length), using original")
                 return text
             }
 
             return cleaned
         } catch {
-            NSLog("[Murmur] LLM processing failed: \(error.localizedDescription)")
+            NSLog("[Sona] LLM processing failed: \(error.localizedDescription)")
             return text
         }
         #else

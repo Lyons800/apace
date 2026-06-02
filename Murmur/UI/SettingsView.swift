@@ -193,7 +193,7 @@ struct SettingsView: View {
             }
 
             Section("Context Detection") {
-                Text("Murmur detects the active app and adjusts formatting — code editors preserve casing, chat apps remove trailing periods, emails add them.")
+                Text("Sona detects the active app and adjusts formatting — code editors preserve casing, chat apps remove trailing periods, emails add them.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -206,7 +206,7 @@ struct SettingsView: View {
     private var dictionaryTab: some View {
         Form {
             Section {
-                Text("Add words and their correct spellings. Murmur will replace spoken forms with the correct version after transcription and hint the speech model for better recognition.")
+                Text("Add words and their correct spellings. Sona will replace spoken forms with the correct version after transcription and hint the speech model for better recognition.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
@@ -379,9 +379,9 @@ struct SettingsView: View {
             } else {
                 try SMAppService.mainApp.unregister()
             }
-            NSLog("[Murmur] Launch at login: \(enabled)")
+            NSLog("[Sona] Launch at login: \(enabled)")
         } catch {
-            NSLog("[Murmur] Failed to set launch at login: \(error.localizedDescription)")
+            NSLog("[Sona] Failed to set launch at login: \(error.localizedDescription)")
         }
     }
 }

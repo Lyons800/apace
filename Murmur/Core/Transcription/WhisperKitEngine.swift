@@ -31,7 +31,7 @@ final class WhisperKitEngine: TranscriptionEngineProtocol {
     /// Dedicated, writable directory for WhisperKit models
     private static var modelCacheDirectory: URL {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let modelsDir = appSupport.appendingPathComponent("Murmur/Models", isDirectory: true)
+        let modelsDir = appSupport.appendingPathComponent("Sona/Models", isDirectory: true)
         try? FileManager.default.createDirectory(at: modelsDir, withIntermediateDirectories: true)
         return modelsDir
     }
@@ -50,7 +50,7 @@ final class WhisperKitEngine: TranscriptionEngineProtocol {
             download: true
         )
 
-        NSLog("[Murmur] WhisperKit init with model: \(resolvedModelName), downloadBase: \(Self.modelCacheDirectory.path)")
+        NSLog("[Sona] WhisperKit init with model: \(resolvedModelName), downloadBase: \(Self.modelCacheDirectory.path)")
 
         let kit = try await WhisperKit(config)
         whisperKit = kit
@@ -140,7 +140,7 @@ final class WhisperKitEngine: TranscriptionEngineProtocol {
         while let url = enumerator.nextObject() as? URL {
             if url.pathExtension == "metadata" {
                 try? fm.removeItem(at: url)
-                NSLog("[Murmur] Removed metadata file: \(url.lastPathComponent)")
+                NSLog("[Sona] Removed metadata file: \(url.lastPathComponent)")
             }
         }
 
@@ -151,7 +151,7 @@ final class WhisperKitEngine: TranscriptionEngineProtocol {
             while let url = hfEnum.nextObject() as? URL {
                 if url.pathExtension == "metadata" {
                     try? fm.removeItem(at: url)
-                    NSLog("[Murmur] Removed HF metadata file: \(url.lastPathComponent)")
+                    NSLog("[Sona] Removed HF metadata file: \(url.lastPathComponent)")
                 }
             }
         }

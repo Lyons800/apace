@@ -1,7 +1,9 @@
-# Murmur — Project Conventions
+# Sona — Project Conventions
 
 ## What is this?
-macOS menu bar dictation app. Hold a hotkey, speak, release — text appears in any app. Powered by WhisperKit (on-device, CoreML + Neural Engine). Previously named "Whispr", renamed to "Murmur" for launch.
+macOS menu bar dictation app (product name **Sona**, domain sona.app). Hold a hotkey, speak, release — text appears in any app. Powered by WhisperKit (on-device, CoreML + Neural Engine). Renamed Whispr → Murmur → **Sona** (the "Murmur" name collided with 7+ other Mac apps).
+
+> **Naming note:** The product/app is **Sona** (`PRODUCT_NAME = Sona`, bundle id `app.sona`), but the Xcode **target, scheme, and Swift module remain "Murmur"** (`PRODUCT_MODULE_NAME = Murmur`). So `@testable import Murmur`, `MurmurApp`, `MurmurConfig`, the `Murmur/` source dir, and `MurmurTests` are all still correct — only the user-facing name/identity changed. The repo is `Lyons800/sona`; the local folder is still `WhisprMacOS`.
 
 ## Stack
 - Swift 5.10+, macOS 14.0+ (Sonoma)
@@ -15,7 +17,7 @@ macOS menu bar dictation app. Hold a hotkey, speak, release — text appears in 
 
 ## Architecture
 - Menu bar app (LSUIElement = true, no dock icon)
-- Bundle ID: `dev.murmur.app`
+- Bundle ID: `app.sona`
 - Observable AppState drives all UI updates
 - Core modules: AudioRecorder, TranscriptionEngine, HotkeyManager, TextInserter, TextPostProcessor, ContextDetector, LLMProcessor, VoiceCommandParser, CustomDictionary, FileTranscriber, MediaController, UpdateManager
 - UI: StatusBarController (menu bar), TranscriptionOverlay (floating preview), SettingsView (SwiftUI), FileTranscriptionView
@@ -31,9 +33,9 @@ macOS menu bar dictation app. Hold a hotkey, speak, release — text appears in 
 - Prefer value types (structs/enums) over classes except where reference semantics needed
 - All audio processing on background queues, UI updates on @MainActor
 - SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor — all types default to @MainActor unless explicitly opted out
-- Config struct: `MurmurConfig` (stored as `murmur_config` in UserDefaults)
-- NSLog prefix: `[Murmur]`
-- App Support path: `~/Library/Application Support/Murmur/`
+- Config struct: `MurmurConfig` (type name unchanged; stored as `sona_config` in UserDefaults, legacy fallback `murmur_config`)
+- NSLog prefix: `[Sona]`
+- App Support path: `~/Library/Application Support/Sona/`
 
 ## File Layout
 - `Murmur/Core/` — business logic (audio, transcription, hotkeys, text insertion)
@@ -51,7 +53,7 @@ macOS menu bar dictation app. Hold a hotkey, speak, release — text appears in 
 - LLM post-processing off by default (requires adding mlx-swift-lm SPM package)
 - Context detection via bundle ID map + fuzzy matching — no accessibility API needed
 - Sparkle for auto-updates (EdDSA signed appcast)
-- $29 one-time purchase via Paddle (free tier available)
+- Open-core: free on-device dictation; **$39 one-time Pro license** unlocks the AI/agent layer (license provider TBD — Lemon Squeezy / Polar). (Supersedes the old "$29 via Paddle".)
 
 ## Enabling LLM Post-Processing
 1. In Xcode: File → Add Package Dependencies → `https://github.com/ml-explore/mlx-swift-lm.git`
@@ -60,6 +62,6 @@ macOS menu bar dictation app. Hold a hotkey, speak, release — text appears in 
 4. Enable in Settings → Features tab → toggle "Enable LLM cleanup"
 
 ## Migration
-- Data migrated automatically from `~/Library/Application Support/Whispr/` on first launch
-- UserDefaults keys migrated from `whispr_*` to `murmur_*`
-- Config migrated from `whispr_config` to `murmur_config`
+- On first launch the whole data dir is renamed `{Murmur,Whispr}/` → `Sona/` (atomic move — preserves downloaded models, no re-download). See `TranscriptionHistory.migrateLegacyDataDirectory`.
+- UserDefaults flags migrated `murmur_*`/`whispr_*` → `sona_*` (no-op across a bundle-id change — user re-onboards once)
+- Config falls back `sona_config` → `murmur_config`

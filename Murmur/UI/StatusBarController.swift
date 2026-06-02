@@ -17,7 +17,7 @@ final class StatusBarController {
         self.onQuitClicked = onQuit
 
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        item.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Murmur")
+        item.button?.image = NSImage(systemSymbolName: "waveform", accessibilityDescription: "Sona")
         item.button?.image?.size = NSSize(width: 18, height: 18)
         item.menu = buildMenu()
         statusItem = item
@@ -85,7 +85,7 @@ final class StatusBarController {
         menu.addItem(settings)
 
         // Quit
-        let quit = NSMenuItem(title: "Quit Murmur", action: #selector(quitClicked), keyEquivalent: "q")
+        let quit = NSMenuItem(title: "Quit Sona", action: #selector(quitClicked), keyEquivalent: "q")
         quit.target = self
         menu.addItem(quit)
 
@@ -103,7 +103,7 @@ final class StatusBarController {
     // MARK: - Icon
 
     private func setIcon(_ systemName: String) {
-        statusItem?.button?.image = NSImage(systemSymbolName: systemName, accessibilityDescription: "Murmur")
+        statusItem?.button?.image = NSImage(systemSymbolName: systemName, accessibilityDescription: "Sona")
         statusItem?.button?.image?.size = NSSize(width: 18, height: 18)
     }
 

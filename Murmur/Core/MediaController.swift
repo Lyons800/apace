@@ -25,7 +25,7 @@ final class MediaController {
             &address, 0, nil, &size, &deviceID
         )
         guard status == noErr, deviceID != kAudioObjectUnknown else {
-            NSLog("[Murmur] MediaController: failed to get default output device")
+            NSLog("[Sona] MediaController: failed to get default output device")
             return
         }
 
@@ -37,7 +37,7 @@ final class MediaController {
 
         status = AudioObjectGetPropertyData(deviceID, &address, 0, nil, &size, &volume)
         guard status == noErr else {
-            NSLog("[Murmur] MediaController: failed to read volume")
+            NSLog("[Sona] MediaController: failed to read volume")
             return
         }
 
@@ -49,7 +49,7 @@ final class MediaController {
         AudioObjectSetPropertyData(deviceID, &address, 0, nil, size, &muted)
 
         isMuted = true
-        NSLog("[Murmur] MediaController: muted device \(deviceID) (was \(String(format: "%.2f", volume)))")
+        NSLog("[Sona] MediaController: muted device \(deviceID) (was \(String(format: "%.2f", volume)))")
     }
 
     /// Restore system audio to previous volume level on the original device.
@@ -69,6 +69,6 @@ final class MediaController {
         isMuted = false
         self.previousVolume = nil
         self.mutedDeviceID = nil
-        NSLog("[Murmur] MediaController: restored device \(deviceID) volume to \(String(format: "%.2f", volume))")
+        NSLog("[Sona] MediaController: restored device \(deviceID) volume to \(String(format: "%.2f", volume))")
     }
 }

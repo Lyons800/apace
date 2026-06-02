@@ -18,48 +18,49 @@ final class TranscriptionHistory {
 
     private init() {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let murmurDir = appSupport.appendingPathComponent("Murmur", isDirectory: true)
-        try? FileManager.default.createDirectory(at: murmurDir, withIntermediateDirectories: true)
-        self.fileURL = murmurDir.appendingPathComponent("history.json")
+        let sonaDir = appSupport.appendingPathComponent("Sona", isDirectory: true)
 
-        // One-time migration from old Whispr data
-        Self.migrateFromWhispr(appSupport: appSupport, murmurDir: murmurDir)
+        // One-time migration of the whole data directory from a previous app name.
+        // A same-volume rename is atomic and instant, so the ~140MB+ of downloaded
+        // models carry over without a copy or re-download.
+        Self.migrateLegacyDataDirectory(appSupport: appSupport, sonaDir: sonaDir)
+
+        try? FileManager.default.createDirectory(at: sonaDir, withIntermediateDirectories: true)
+        self.fileURL = sonaDir.appendingPathComponent("history.json")
 
         load()
     }
 
-    /// Migrate data from ~/Library/Application Support/Whispr/ to Murmur/
-    private static func migrateFromWhispr(appSupport: URL, murmurDir: URL) {
+    /// Rename ~/Library/Application Support/{Murmur,Whispr}/ → Sona/ on first launch
+    /// under the new name. Newest legacy name wins; older ones are left untouched.
+    private static func migrateLegacyDataDirectory(appSupport: URL, sonaDir: URL) {
         let fm = FileManager.default
-        let legacyDir = appSupport.appendingPathComponent("Whispr", isDirectory: true)
-        guard fm.fileExists(atPath: legacyDir.path) else { return }
+        guard !fm.fileExists(atPath: sonaDir.path) else { return }
 
-        // Migrate history.json
-        let legacyHistory = legacyDir.appendingPathComponent("history.json")
-        let newHistory = murmurDir.appendingPathComponent("history.json")
-        if fm.fileExists(atPath: legacyHistory.path) && !fm.fileExists(atPath: newHistory.path) {
-            try? fm.copyItem(at: legacyHistory, to: newHistory)
-            NSLog("[Murmur] Migrated history from Whispr")
-        }
-
-        // Migrate Models directory
-        let legacyModels = legacyDir.appendingPathComponent("Models", isDirectory: true)
-        let newModels = murmurDir.appendingPathComponent("Models", isDirectory: true)
-        if fm.fileExists(atPath: legacyModels.path) && !fm.fileExists(atPath: newModels.path) {
-            try? fm.copyItem(at: legacyModels, to: newModels)
-            NSLog("[Murmur] Migrated models from Whispr")
-        }
-
-        // Migrate UserDefaults keys
-        let legacyKeys: [(old: String, new: String)] = [
-            ("whispr_onboarding_complete", "murmur_onboarding_complete"),
-            ("whispr_accessibility_prompted", "murmur_accessibility_prompted"),
-        ]
-        for key in legacyKeys {
-            if UserDefaults.standard.object(forKey: key.old) != nil && UserDefaults.standard.object(forKey: key.new) == nil {
-                UserDefaults.standard.set(UserDefaults.standard.bool(forKey: key.old), forKey: key.new)
-                UserDefaults.standard.removeObject(forKey: key.old)
+        for legacyName in ["Murmur", "Whispr"] {
+            let legacyDir = appSupport.appendingPathComponent(legacyName, isDirectory: true)
+            guard fm.fileExists(atPath: legacyDir.path) else { continue }
+            do {
+                try fm.moveItem(at: legacyDir, to: sonaDir)
+                NSLog("[Sona] Migrated data directory from \(legacyName)")
+            } catch {
+                NSLog("[Sona] Data migration from \(legacyName) failed: \(error.localizedDescription)")
             }
+            break
+        }
+
+        // Carry over UserDefaults flags. (No-op if the bundle identifier also changed,
+        // since that moves the defaults domain — acceptable, the user just re-onboards.)
+        let keyMap: [(old: String, new: String)] = [
+            ("murmur_onboarding_complete", "sona_onboarding_complete"),
+            ("murmur_accessibility_prompted", "sona_accessibility_prompted"),
+            ("whispr_onboarding_complete", "sona_onboarding_complete"),
+            ("whispr_accessibility_prompted", "sona_accessibility_prompted"),
+        ]
+        for key in keyMap where UserDefaults.standard.object(forKey: key.old) != nil
+            && UserDefaults.standard.object(forKey: key.new) == nil {
+            UserDefaults.standard.set(UserDefaults.standard.bool(forKey: key.old), forKey: key.new)
+            UserDefaults.standard.removeObject(forKey: key.old)
         }
     }
 
@@ -93,7 +94,7 @@ final class TranscriptionHistory {
             let data = try Data(contentsOf: fileURL)
             entries = try JSONDecoder().decode([HistoryEntry].self, from: data)
         } catch {
-            NSLog("[Murmur] Failed to load history: \(error.localizedDescription)")
+            NSLog("[Sona] Failed to load history: \(error.localizedDescription)")
         }
     }
 
@@ -102,7 +103,7 @@ final class TranscriptionHistory {
             let data = try JSONEncoder().encode(entries)
             try data.write(to: fileURL, options: .atomic)
         } catch {
-            NSLog("[Murmur] Failed to save history: \(error.localizedDescription)")
+            NSLog("[Sona] Failed to save history: \(error.localizedDescription)")
         }
     }
 }
