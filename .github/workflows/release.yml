@@ -8,16 +8,20 @@ on:
 env:
   APP_NAME: Murmur
   SCHEME: Murmur
-  XCODE_VERSION: '16.3'
 
 jobs:
   build-sign-release:
-    runs-on: macos-15
+    # macOS 26 runner + Xcode 26 SDK are required: AppleSpeechEngine compiles
+    # against macOS-26-only SpeechAnalyzer symbols (guarded at runtime by
+    # @available(macOS 26.0, *)). An older SDK can't compile those references.
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
 
       - name: Select Xcode
-        run: sudo xcode-select -s /Applications/Xcode_${{ env.XCODE_VERSION }}.app
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
       - name: Import signing certificate
         env:
@@ -111,7 +115,9 @@ jobs:
       - name: Generate appcast.xml
         run: |
           VERSION=${GITHUB_REF_NAME#v}
-          DMG_SIZE=$(stat -f%z "build/$APP_NAME.dmg")
+          # sign_update emits BOTH sparkle:edSignature="..." and length="..." —
+          # so the enclosure must NOT also hardcode length, or the XML ends up
+          # with a duplicate `length` attribute and Sparkle rejects the appcast.
           cat > build/appcast.xml << EOF
           <?xml version="1.0" encoding="utf-8"?>
           <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
@@ -124,7 +130,6 @@ jobs:
                 <pubDate>$(date -R)</pubDate>
                 <enclosure
                   url="https://github.com/${{ github.repository }}/releases/download/${GITHUB_REF_NAME}/$APP_NAME.dmg"
-                  length="$DMG_SIZE"
                   type="application/octet-stream"
                   ${{ env.SPARKLE_SIGNATURE }}
                 />
