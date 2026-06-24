@@ -1,0 +1,696 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BC91B45F2F6ADE780024EFF8 /* WhisperKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC91B3912F6AE0000024EFF8 /* WhisperKit */; };
+		BC91B4A32F6B00000024EFF8 /* MLXLLM in Frameworks */ = {isa = PBXBuildFile; productRef = BC91B4A12F6B00000024EFF8 /* MLXLLM */; };
+		BC91B4A42F6B00000024EFF8 /* MLXLMCommon in Frameworks */ = {isa = PBXBuildFile; productRef = BC91B4A22F6B00000024EFF8 /* MLXLMCommon */; };
+		BCMU000012F70000A0000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = BCMU000012F70000A0000002 /* Sparkle */; };
+		DEADBEEF000000000000DN03 /* DynamicNotchKit in Frameworks */ = {isa = PBXBuildFile; productRef = DEADBEEF000000000000DN02 /* DynamicNotchKit */; };
+		FACADE000000000000000003 /* FluidAudio in Frameworks */ = {isa = PBXBuildFile; productRef = FACADE000000000000000002 /* FluidAudio */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		BC91B36A2F6ADC0A0024EFF8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC91B3522F6ADC080024EFF8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BC91B3592F6ADC080024EFF8;
+			remoteInfo = Apace;
+		};
+		BC91B3742F6ADC0A0024EFF8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BC91B3522F6ADC080024EFF8 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BC91B3592F6ADC080024EFF8;
+			remoteInfo = Apace;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		BC91B35A2F6ADC080024EFF8 /* Apace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = Apace.app; path = Apace.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC91B3692F6ADC0A0024EFF8 /* ApaceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ApaceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC91B3732F6ADC0A0024EFF8 /* ApaceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ApaceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		BC91B35C2F6ADC080024EFF8 /* Apace */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Apace;
+			sourceTree = "<group>";
+		};
+		BC91B36C2F6ADC0A0024EFF8 /* ApaceTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ApaceTests;
+			sourceTree = "<group>";
+		};
+		BC91B3762F6ADC0A0024EFF8 /* ApaceUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ApaceUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BC91B3572F6ADC080024EFF8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BC91B45F2F6ADE780024EFF8 /* WhisperKit in Frameworks */,
+				FACADE000000000000000003 /* FluidAudio in Frameworks */,
+				DEADBEEF000000000000DN03 /* DynamicNotchKit in Frameworks */,
+				BC91B4A32F6B00000024EFF8 /* MLXLLM in Frameworks */,
+				BC91B4A42F6B00000024EFF8 /* MLXLMCommon in Frameworks */,
+				BCMU000012F70000A0000001 /* Sparkle in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC91B3662F6ADC0A0024EFF8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC91B3702F6ADC0A0024EFF8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BC91B3512F6ADC080024EFF8 = {
+			isa = PBXGroup;
+			children = (
+				BC91B35C2F6ADC080024EFF8 /* Apace */,
+				BC91B36C2F6ADC0A0024EFF8 /* ApaceTests */,
+				BC91B3762F6ADC0A0024EFF8 /* ApaceUITests */,
+				BC91B35B2F6ADC080024EFF8 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		BC91B35B2F6ADC080024EFF8 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BC91B35A2F6ADC080024EFF8 /* Apace.app */,
+				BC91B3692F6ADC0A0024EFF8 /* ApaceTests.xctest */,
+				BC91B3732F6ADC0A0024EFF8 /* ApaceUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BC91B3592F6ADC080024EFF8 /* Apace */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BC91B37D2F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "Apace" */;
+			buildPhases = (
+				BC91B3562F6ADC080024EFF8 /* Sources */,
+				BC91B3572F6ADC080024EFF8 /* Frameworks */,
+				BC91B3582F6ADC080024EFF8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				BC91B35C2F6ADC080024EFF8 /* Apace */,
+			);
+			name = Apace;
+			packageProductDependencies = (
+				BC91B3912F6AE0000024EFF8 /* WhisperKit */,
+				FACADE000000000000000002 /* FluidAudio */,
+				DEADBEEF000000000000DN02 /* DynamicNotchKit */,
+				BC91B4A12F6B00000024EFF8 /* MLXLLM */,
+				BC91B4A22F6B00000024EFF8 /* MLXLMCommon */,
+				BCMU000012F70000A0000002 /* Sparkle */,
+			);
+			productName = Apace;
+			productReference = BC91B35A2F6ADC080024EFF8 /* Apace.app */;
+			productType = "com.apple.product-type.application";
+		};
+		BC91B3682F6ADC0A0024EFF8 /* ApaceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BC91B3802F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "ApaceTests" */;
+			buildPhases = (
+				BC91B3652F6ADC0A0024EFF8 /* Sources */,
+				BC91B3662F6ADC0A0024EFF8 /* Frameworks */,
+				BC91B3672F6ADC0A0024EFF8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BC91B36B2F6ADC0A0024EFF8 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				BC91B36C2F6ADC0A0024EFF8 /* ApaceTests */,
+			);
+			name = ApaceTests;
+			packageProductDependencies = (
+			);
+			productName = ApaceTests;
+			productReference = BC91B3692F6ADC0A0024EFF8 /* ApaceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		BC91B3722F6ADC0A0024EFF8 /* ApaceUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BC91B3832F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "ApaceUITests" */;
+			buildPhases = (
+				BC91B36F2F6ADC0A0024EFF8 /* Sources */,
+				BC91B3702F6ADC0A0024EFF8 /* Frameworks */,
+				BC91B3712F6ADC0A0024EFF8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				BC91B3752F6ADC0A0024EFF8 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				BC91B3762F6ADC0A0024EFF8 /* ApaceUITests */,
+			);
+			name = ApaceUITests;
+			packageProductDependencies = (
+			);
+			productName = ApaceUITests;
+			productReference = BC91B3732F6ADC0A0024EFF8 /* ApaceUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BC91B3522F6ADC080024EFF8 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2630;
+				LastUpgradeCheck = 2630;
+				TargetAttributes = {
+					BC91B3592F6ADC080024EFF8 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					BC91B3682F6ADC0A0024EFF8 = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = BC91B3592F6ADC080024EFF8;
+					};
+					BC91B3722F6ADC0A0024EFF8 = {
+						CreatedOnToolsVersion = 26.3;
+						TestTargetID = BC91B3592F6ADC080024EFF8;
+					};
+				};
+			};
+			buildConfigurationList = BC91B3552F6ADC080024EFF8 /* Build configuration list for PBXProject "Apace" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BC91B3512F6ADC080024EFF8;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				BC91B3902F6AE0000024EFF8 /* XCRemoteSwiftPackageReference "WhisperKit" */,
+				FACADE000000000000000001 /* XCRemoteSwiftPackageReference "FluidAudio" */,
+				DEADBEEF000000000000DN01 /* XCRemoteSwiftPackageReference "DynamicNotchKit" */,
+				BC91B4A02F6B00000024EFF8 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */,
+				BCMU000012F70000A0000003 /* XCRemoteSwiftPackageReference "Sparkle" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = BC91B35B2F6ADC080024EFF8 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BC91B3592F6ADC080024EFF8 /* Apace */,
+				BC91B3682F6ADC0A0024EFF8 /* ApaceTests */,
+				BC91B3722F6ADC0A0024EFF8 /* ApaceUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BC91B3582F6ADC080024EFF8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC91B3672F6ADC0A0024EFF8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC91B3712F6ADC0A0024EFF8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BC91B3562F6ADC080024EFF8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC91B3652F6ADC0A0024EFF8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC91B36F2F6ADC0A0024EFF8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		BC91B36B2F6ADC0A0024EFF8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BC91B3592F6ADC080024EFF8 /* Apace */;
+			targetProxy = BC91B36A2F6ADC0A0024EFF8 /* PBXContainerItemProxy */;
+		};
+		BC91B3752F6ADC0A0024EFF8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BC91B3592F6ADC080024EFF8 /* Apace */;
+			targetProxy = BC91B3742F6ADC0A0024EFF8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		BC91B37B2F6ADC0A0024EFF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = BWD692VD35;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		BC91B37C2F6ADC0A0024EFF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = BWD692VD35;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		BC91B37E2F6ADC0A0024EFF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Apace/Apace.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BWD692VD35;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Apace needs microphone access to transcribe your speech";
+				INFOPLIST_KEY_SUFeedURL = "https://github.com/Lyons800/apace/releases/latest/download/appcast.xml";
+				INFOPLIST_KEY_SUPublicEDKey = "zOO/VOlBiXDHXRsNb9W3LcMRFq3ZO8UCcZEoWbGLzFg=";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = so.apace;
+				PRODUCT_MODULE_NAME = Apace;
+				PRODUCT_NAME = Apace;
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		BC91B37F2F6ADC0A0024EFF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Apace/Apace.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BWD692VD35;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SELECTED_FILES = readonly;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Apace needs microphone access to transcribe your speech";
+				INFOPLIST_KEY_SUFeedURL = "https://github.com/Lyons800/apace/releases/latest/download/appcast.xml";
+				INFOPLIST_KEY_SUPublicEDKey = "zOO/VOlBiXDHXRsNb9W3LcMRFq3ZO8UCcZEoWbGLzFg=";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = so.apace;
+				PRODUCT_MODULE_NAME = Apace;
+				PRODUCT_NAME = Apace;
+				REGISTER_APP_GROUPS = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		BC91B3812F6ADC0A0024EFF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BWD692VD35;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = so.apace.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Apace.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Apace";
+			};
+			name = Debug;
+		};
+		BC91B3822F6ADC0A0024EFF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BWD692VD35;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = so.apace.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Apace.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Apace";
+			};
+			name = Release;
+		};
+		BC91B3842F6ADC0A0024EFF8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BWD692VD35;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = so.apace.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Apace;
+			};
+			name = Debug;
+		};
+		BC91B3852F6ADC0A0024EFF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = BWD692VD35;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = so.apace.uitests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = Apace;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BC91B3552F6ADC080024EFF8 /* Build configuration list for PBXProject "Apace" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC91B37B2F6ADC0A0024EFF8 /* Debug */,
+				BC91B37C2F6ADC0A0024EFF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BC91B37D2F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "Apace" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC91B37E2F6ADC0A0024EFF8 /* Debug */,
+				BC91B37F2F6ADC0A0024EFF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BC91B3802F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "ApaceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC91B3812F6ADC0A0024EFF8 /* Debug */,
+				BC91B3822F6ADC0A0024EFF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BC91B3832F6ADC0A0024EFF8 /* Build configuration list for PBXNativeTarget "ApaceUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC91B3842F6ADC0A0024EFF8 /* Debug */,
+				BC91B3852F6ADC0A0024EFF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BC91B3902F6AE0000024EFF8 /* XCRemoteSwiftPackageReference "WhisperKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/argmaxinc/WhisperKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.0;
+			};
+		};
+		BC91B4A02F6B00000024EFF8 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ml-explore/mlx-swift-lm.git";
+			requirement = {
+				kind = revision;
+				revision = 405162196eb484eeaa4afcc7bd354f9b559a11d5;
+			};
+		};
+		BCMU000012F70000A0000003 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
+		DEADBEEF000000000000DN01 /* XCRemoteSwiftPackageReference "DynamicNotchKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MrKai77/DynamicNotchKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+		FACADE000000000000000001 /* XCRemoteSwiftPackageReference "FluidAudio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/FluidInference/FluidAudio.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.14.7;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BC91B3912F6AE0000024EFF8 /* WhisperKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC91B3902F6AE0000024EFF8 /* XCRemoteSwiftPackageReference "WhisperKit" */;
+			productName = WhisperKit;
+		};
+		BC91B4A12F6B00000024EFF8 /* MLXLLM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC91B4A02F6B00000024EFF8 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */;
+			productName = MLXLLM;
+		};
+		BC91B4A22F6B00000024EFF8 /* MLXLMCommon */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC91B4A02F6B00000024EFF8 /* XCRemoteSwiftPackageReference "mlx-swift-lm" */;
+			productName = MLXLMCommon;
+		};
+		BCMU000012F70000A0000002 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BCMU000012F70000A0000003 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+		DEADBEEF000000000000DN02 /* DynamicNotchKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DEADBEEF000000000000DN01 /* XCRemoteSwiftPackageReference "DynamicNotchKit" */;
+			productName = DynamicNotchKit;
+		};
+		FACADE000000000000000002 /* FluidAudio */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FACADE000000000000000001 /* XCRemoteSwiftPackageReference "FluidAudio" */;
+			productName = FluidAudio;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = BC91B3522F6ADC080024EFF8 /* Project object */;
+}
