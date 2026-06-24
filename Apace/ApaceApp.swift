@@ -346,9 +346,20 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         hotkeyManager.onCommandStop = { [weak self] in
             Task { @MainActor in await self?.stopCommandAndRun() }
         }
+        hotkeyManager.onAccessibilityNeeded = { [weak self] in
+            Task { @MainActor in self?.surfaceAccessibilityNeeded() }
+        }
         island.onCancel = { [weak self] in self?.island.dismiss() }
 
         hotkeyManager.start()
+    }
+
+    /// The hotkey tap couldn't be created because Accessibility isn't granted — surface it
+    /// clearly instead of leaving a silently dead hotkey.
+    private func surfaceAccessibilityNeeded() {
+        NSLog("[Apace] Accessibility not granted — hotkey disabled until granted + relaunch")
+        appState.hasAccessibilityPermission = false
+        island.message("Apace needs Accessibility for the hotkey — grant it in System Settings → Privacy & Security → Accessibility, then relaunch.")
     }
 
     // MARK: - Command Mode (Apace Pro)

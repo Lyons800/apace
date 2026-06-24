@@ -29,6 +29,7 @@ private func hotkeyEventTapCallback(
 final class HotkeyManager {
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
+    private var watchdog: Timer?
     private var isModifierKeyDown = false
     private var activeHoldIsCommand = false
 
@@ -37,6 +38,9 @@ final class HotkeyManager {
     /// Fired when the dictation key is held together with ⇧ — Command Mode (Apace Pro).
     var onCommandStart: (() -> Void)?
     var onCommandStop: (() -> Void)?
+    /// Fired when the event tap can't be created — i.e. Accessibility isn't granted, so
+    /// the hotkey is dead. Lets the app tell the user instead of silently doing nothing.
+    var onAccessibilityNeeded: (() -> Void)?
 
     private var targetKeyCode: UInt16
     private var targetModifiers: UInt
@@ -71,7 +75,8 @@ final class HotkeyManager {
             callback: hotkeyEventTapCallback,
             userInfo: refcon
         ) else {
-            NSLog("[Apace] Hotkey event tap could not be created — grant Input Monitoring / Accessibility")
+            NSLog("[Apace] Hotkey event tap could not be created — Accessibility not granted")
+            onAccessibilityNeeded?()
             return
         }
 
@@ -81,9 +86,12 @@ final class HotkeyManager {
 
         self.eventTap = tap
         self.runLoopSource = source
+        startWatchdog()
     }
 
     func stop() {
+        watchdog?.invalidate()
+        watchdog = nil
         if let tap = eventTap { CGEvent.tapEnable(tap: tap, enable: false) }
         if let source = runLoopSource { CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes) }
         eventTap = nil
@@ -95,6 +103,43 @@ final class HotkeyManager {
 
     func reEnableTap() {
         if let tap = eventTap { CGEvent.tapEnable(tap: tap, enable: true) }
+    }
+
+    // MARK: - Stuck-hold recovery
+
+    /// The system can briefly disable the tap (timeout / user input) and a key-up can slip
+    /// through that gap, leaving us "stuck recording" forever. Poll the real key state and
+    /// synthesize the release so dictation can never hang.
+    private func startWatchdog() {
+        watchdog?.invalidate()
+        watchdog = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: true) { [weak self] _ in
+            self?.reconcileHoldState()
+        }
+    }
+
+    private func reconcileHoldState() {
+        guard mode == .hold, isModifierKeyDown, !isHoldKeyStillDown() else { return }
+        NSLog("[Apace] Watchdog recovered a missed hotkey release")
+        isModifierKeyDown = false
+        if activeHoldIsCommand { onCommandStop?() } else { onRecordingStop?() }
+        activeHoldIsCommand = false
+    }
+
+    /// Is the configured hold key physically down right now? For modifier-only keys this
+    /// reads the live modifier flags (no dependency on having seen the event); for regular
+    /// keys it queries the hardware key state.
+    private func isHoldKeyStillDown() -> Bool {
+        if isModifierOnlyKey(targetKeyCode) {
+            let flags = NSEvent.modifierFlags
+            switch targetKeyCode {
+            case UInt16(kVK_RightOption), UInt16(kVK_Option):   return flags.contains(.option)
+            case UInt16(kVK_RightCommand), UInt16(kVK_Command): return flags.contains(.command)
+            case UInt16(kVK_RightShift), UInt16(kVK_Shift):     return flags.contains(.shift)
+            case UInt16(kVK_RightControl), UInt16(kVK_Control): return flags.contains(.control)
+            default: break
+            }
+        }
+        return CGEventSource.keyState(.combinedSessionState, key: CGKeyCode(targetKeyCode))
     }
 
     func updateHotkey(keyCode: UInt16, modifiers: UInt = 0, mode: RecordingMode) {
