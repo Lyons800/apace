@@ -526,43 +526,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
     }
 
     private func startStreamingRecording(config: ApaceConfig) throws {
-        // Real-time path (macOS 26 + Apple SpeechAnalyzer): ONE persistent analyzer,
-        // fed live mic audio, surfacing volatile partials to the notch word-by-word.
-        // This is what actually keeps up with speech; the batch loop below can't.
-        if #available(macOS 26.0, *), transcriptionEngine.identifier == .appleSpeech,
-           let session = StreamingSpeechSession(localeID: Self.localeID(for: config.language)) {
-            self.streamingSession = session
-            appState.state = .recording
-            appState.isStreaming = true
-            menuBarIcon = "waveform.circle.fill"
-            island.transcribing("")
-
-            Task { @MainActor [weak self] in
-                do {
-                    try await session.start { text in
-                        self?.appState.streamingConfirmedText = text
-                        self?.island.transcribing(text)
-                    }
-                } catch {
-                    NSLog("[Apace] Apple streaming start failed: \(error.localizedDescription)")
-                }
-            }
-
-            // Feed each freshly-captured chunk straight to the analyzer (chunks
-            // arrive on the main queue in order, so feeding stays ordered).
-            try audioRecorder.startRecording(levelCallback: { [weak self] level in
-                Task { @MainActor [weak self] in
-                    self?.appState.audioLevel = level
-                    self?.island.updateLevel(level)
-                }
-            }, sampleCallback: { [weak self] samples in
-                (self?.streamingSession as? StreamingSpeechSession)?.feed(samples)
-            })
-            NSLog("[Apace] Recording started (Apple live streaming)")
-            return
-        }
-
-        // Fallback (WhisperKit / Parakeet): batch re-transcription loop.
+        // Live preview via periodic batch re-transcription (windowed to bound latency).
+        // Apple's volatile streaming transcriber returns no live results on this build,
+        // so the notch is driven from the same reliable batch path as the final insert —
+        // and the level callback below keeps the waveform bars moving.
         try audioRecorder.startRecording { [weak self] level in
             Task { @MainActor [weak self] in
                 self?.appState.audioLevel = level
@@ -665,16 +632,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, Observable {
         // already-accurate final transcript — no second batch pass needed.
         if #available(macOS 26.0, *), let session = streamingSession as? StreamingSpeechSession {
             streamingSession = nil
-            _ = audioRecorder.stopRecording()
+            let allSamples = audioRecorder.stopRecording()
             appState.isStreaming = false
             appState.state = .transcribing
-            let finalText = await session.finish()
+            var finalText = await session.finish()
+
+            // Apple's volatile streaming transcriber sometimes yields nothing on release;
+            // fall back to a one-shot batch transcription of the full clip (reliable).
+            if Self.stripSpecialTokens(finalText).isEmpty, allSamples.count > 8000 {
+                let trimmed = Self.trimTrailingSilence(allSamples, threshold: 0.005, minTrailingSamples: 8000)
+                let promptHint = CustomDictionary.promptHint(from: config.dictionaryEntries)
+                if let result = try? await transcriptionEngine.transcribe(audioSamples: trimmed,
+                                                                          language: config.language,
+                                                                          promptText: promptHint) {
+                    finalText = result.text
+                    StreamingSpeechSession.dbg("batch fallback: '\(Self.stripSpecialTokens(result.text).prefix(60))'")
+                } else {
+                    StreamingSpeechSession.dbg("batch fallback: transcribe threw")
+                }
+            }
+
             island.dismiss()
             let raw = Self.stripSpecialTokens(finalText)
             if !raw.isEmpty, !isHallucination(raw) {
                 await processAndInsert(rawText: raw, config: config, context: context)
             } else {
-                NSLog("[Apace] Streaming produced no usable text")
+                NSLog("[Apace] No usable text (streaming + batch both empty)")
+                StreamingSpeechSession.dbg("FINAL: no usable text after batch fallback")
                 if config.playSounds { SoundEffects.playError() }
                 setReadyAndApplyPendingReload()
             }

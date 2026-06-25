@@ -263,42 +263,51 @@ private struct TranscribingView: View {
     let level: Float
     let text: String
 
+    /// Show only the most recent slice so the current word is always visible. A
+    /// ScrollView inside DynamicNotchKit doesn't reliably auto-pin to the bottom, so
+    /// we window the text + head-truncate instead — deterministic, always-latest.
+    private var windowed: String {
+        let maxChars = 180
+        guard text.count > maxChars else { return text }
+        let tail = text.suffix(maxChars)
+        if let sp = tail.firstIndex(of: " ") { return "…" + tail[tail.index(after: sp)...] }
+        return "…" + tail
+    }
+
     var body: some View {
         HStack(alignment: .center, spacing: 10) {          // centered, fixed-height row
             EqBars(level: level)
-            ScrollViewReader { proxy in
-                ScrollView(.vertical, showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 0) {
-                        Text(text.isEmpty ? "Listening…" : text)
-                            .font(.system(size: 14, weight: .medium))
-                            .foregroundStyle(text.isEmpty ? .white.opacity(0.6) : .white.opacity(0.95))
-                            .multilineTextAlignment(.leading)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Color.clear.frame(height: 1).id("bottomAnchor")
-                    }
-                }
-                .frame(width: 300, height: 40)             // fixed 2-line box — stable, no jitter
-                .onChange(of: text) {
-                    withAnimation(.easeOut(duration: 0.18)) {
-                        proxy.scrollTo("bottomAnchor", anchor: .bottom)
-                    }
-                }
-            }
+            Text(text.isEmpty ? "Listening…" : windowed)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(text.isEmpty ? .white.opacity(0.6) : .white.opacity(0.95))
+                .multilineTextAlignment(.leading)
+                .lineLimit(2)
+                .truncationMode(.head)                     // keep the END (latest words) visible
+                .frame(width: 300, height: 34, alignment: .bottomLeading)
         }
     }
 }
 
 private struct EqBars: View {
     let level: Float
+
+    /// Speech RMS lands around 0.001–0.05 — far below a linear bar threshold, which is
+    /// why the bars sat frozen. Map it logarithmically (0.001→0, ~0.3→1), same as the
+    /// cursor overlay's waveform, so quiet speech still drives visible motion.
+    private var norm: CGFloat {
+        let clamped = max(Float(0.0008), min(level, 0.3))
+        let logVal = (log10(clamped) + 3.1) / 2.6      // 0.0008→0, 0.3→~1
+        return CGFloat(max(0, min(logVal, 1)))
+    }
+
     var body: some View {
         HStack(spacing: 3) {
             ForEach(0..<5, id: \.self) { i in
-                let base = CGFloat(max(0.12, min(level * 6, 1)))
-                let h = max(0.15, base * (0.5 + 0.5 * abs(sin(Double(i) * 1.3))))
+                let h = max(0.12, norm * (0.45 + 0.55 * abs(sin(Double(i) * 1.3))))
                 RoundedRectangle(cornerRadius: 2)
                     .fill(signal)
-                    .frame(width: 3, height: 6 + h * 16)
-                    .animation(.interpolatingSpring(stiffness: 280, damping: 12), value: level)
+                    .frame(width: 3, height: 5 + h * 18)
+                    .animation(.interpolatingSpring(stiffness: 300, damping: 11), value: norm)
             }
         }
         .frame(height: 22)
